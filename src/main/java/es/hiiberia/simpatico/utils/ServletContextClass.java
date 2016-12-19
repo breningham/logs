@@ -13,7 +13,7 @@ public class ServletContextClass implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent arg0) {
 		if (!SimpaticoProperties.getStrings()){
-			throw new InternalErrorException("Problems with DEWI properties file");
+			throw new InternalErrorException("Problems with SIMPATICO properties file");
 		}
 
 		// Start MQTT broker receiver		
