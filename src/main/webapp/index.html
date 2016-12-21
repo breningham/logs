@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Simpatico API</title>
+  <title>Simpatico Logs API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8" />
@@ -836,7 +836,7 @@ margin-bottom: 20px;
         <div id="content">
             <div id="project">
                 <div class="pull-left">
-                    <h1>Simpatico API</h1>
+                    <h1>Simpatico Logs API</h1>
                 </div>
                 <div class="clearfix"></div>
             </div>
@@ -921,7 +921,7 @@ margin-bottom: 20px;
                                             <div class="tab-content">
                                                 <div class="tab-pane active" id="examples-Delete-removeDelete-0-curl">
                                                     <pre class="prettyprint"><code class="language-bsh">
-curl -X <span style="text-transform: uppercase;">delete</span> "http://localhost:8080/simpatico/api/remove"
+curl -X <span style="text-transform: uppercase;">delete</span> "http://localhost:8080/simpatico/api/logs/remove"
 
 
 </code></pre>
@@ -1068,7 +1068,7 @@ namespace Example
 
                                                 <div class="tab-pane" id="examples-Delete-removeDelete-0-php">
                                                   <pre class="prettyprint"><code class="language-php">
-<?php
+
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new io.swagger.client\Api\DeleteApi();
@@ -1081,7 +1081,9 @@ try {
     echo 'Exception when calling DeleteApi->removeDelete: ', $e->getMessage(), PHP_EOL;
 }
 
+
                                                   </code></pre>
+
           </div>
 
                                             </div>
@@ -1424,7 +1426,7 @@ try {
                                             <div class="clearfix"></div>
 
                                             <p></p>
-                                            <p class="marked">Find documents by words. If multiple parameters have been used, the result will be like an &#39;AND&#39; operation. If no params all documents are returned.
+                                            <p class="marked">Find documents by words.
 </p>
                                             <p></p>
                                             <br />
@@ -1468,7 +1470,7 @@ try {
                                             <div class="tab-content">
                                                 <div class="tab-pane active" id="examples-Find-findGet-0-curl">
                                                     <pre class="prettyprint"><code class="language-bsh">
-curl -X <span style="text-transform: uppercase;">get</span> "http://localhost:8080/simpatico/api/find?literalwords=&wildcardword="
+curl -X <span style="text-transform: uppercase;">get</span> "http://localhost:8080/simpatico/api/logs/find?words="
 
 
 </code></pre>
@@ -1489,10 +1491,9 @@ public class FindApiExample {
     public static void main(String[] args) {
         
         FindApi apiInstance = new FindApi();
-        String literalwords = literalwords_example; // String | Comma separated words. Only match if the literal word appear in the document.
-        String wildcardword = wildcardword_example; // String | Wildcard word. For example 'h?ll*'.
+        String words = words_example; // String | Comma separated words. Espaces are allowed.
         try {
-            inline_response_200 result = apiInstance.findGet(literalwords, wildcardword);
+            inline_response_200 result = apiInstance.findGet(words);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling FindApi#findGet");
@@ -1513,10 +1514,9 @@ public class FindApiExample {
 
     public static void main(String[] args) {
         FindApi apiInstance = new FindApi();
-        String literalwords = literalwords_example; // String | Comma separated words. Only match if the literal word appear in the document.
-        String wildcardword = wildcardword_example; // String | Wildcard word. For example 'h?ll*'.
+        String words = words_example; // String | Comma separated words. Espaces are allowed.
         try {
-            inline_response_200 result = apiInstance.findGet(literalwords, wildcardword);
+            inline_response_200 result = apiInstance.findGet(words);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling FindApi#findGet");
@@ -1537,14 +1537,12 @@ public class FindApiExample {
                                                 <div class="tab-pane" id="examples-Find-findGet-0-objc">
                                                     <pre class="prettyprint"><code class="language-cpp">
 
-String *literalwords = literalwords_example; // Comma separated words. Only match if the literal word appear in the document. (optional)
-String *wildcardword = wildcardword_example; // Wildcard word. For example 'h?ll*'. (optional)
+String *words = words_example; // Comma separated words. Espaces are allowed. (optional)
 
 FindApi *apiInstance = [[FindApi alloc] init];
 
 // Find documents
-[apiInstance findGetWith:literalwords
-    wildcardword:wildcardword
+[apiInstance findGetWith:words
               completionHandler: ^(inline_response_200 output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -1563,8 +1561,7 @@ var  = require('');
 var api = new .FindApi()
 
 var opts = { 
-  'literalwords': literalwords_example, // {String} Comma separated words. Only match if the literal word appear in the document.
-  'wildcardword': wildcardword_example // {String} Wildcard word. For example 'h?ll*'.
+  'words': words_example // {String} Comma separated words. Espaces are allowed.
 };
 
 var callback = function(error, data, response) {
@@ -1599,13 +1596,12 @@ namespace Example
         {
             
             var apiInstance = new FindApi();
-            var literalwords = literalwords_example;  // String | Comma separated words. Only match if the literal word appear in the document. (optional) 
-            var wildcardword = wildcardword_example;  // String | Wildcard word. For example 'h?ll*'. (optional) 
+            var words = words_example;  // String | Comma separated words. Espaces are allowed. (optional) 
 
             try
             {
                 // Find documents
-                inline_response_200 result = apiInstance.findGet(literalwords, wildcardword);
+                inline_response_200 result = apiInstance.findGet(words);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1626,11 +1622,10 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new io.swagger.client\Api\FindApi();
-$literalwords = literalwords_example; // String | Comma separated words. Only match if the literal word appear in the document.
-$wildcardword = wildcardword_example; // String | Wildcard word. For example 'h?ll*'.
+$words = words_example; // String | Comma separated words. Espaces are allowed.
 
 try {
-    $result = $api_instance->findGet($literalwords, $wildcardword);
+    $result = $api_instance->findGet($words);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling FindApi->findGet: ', $e->getMessage(), PHP_EOL;
@@ -1661,16 +1656,16 @@ try {
                                                         <th>Description</th>
                                                     </tr>
                                                     <!---->
-                                                        <tr><td style="width:150px;">literalwords</td>
+                                                        <tr><td style="width:150px;">words</td>
 <td>
 
 
 <script>
 												$(document).ready(function() {
 													var schemaWrapper = {
-  "name" : "literalwords",
+  "name" : "words",
   "in" : "query",
-  "description" : "Comma separated words. Only match if the literal word appear in the document.",
+  "description" : "Comma separated words. Espaces are allowed.",
   "required" : false,
   "type" : "string"
 };
@@ -1680,7 +1675,7 @@ try {
 
 
 													var view = new JSONSchemaView(schema,0);
-													var result = $('#d2e199_findGet_literalwords');
+													var result = $('#d2e199_findGet_words');
 													result.empty();
 													result.append(view.render());
 
@@ -1690,40 +1685,7 @@ try {
 
 												});
 												</script>
-												<div id="d2e199_findGet_literalwords"></div>
-</td>
-</tr>
-
-                                                        <tr><td style="width:150px;">wildcardword</td>
-<td>
-
-
-<script>
-												$(document).ready(function() {
-													var schemaWrapper = {
-  "name" : "wildcardword",
-  "in" : "query",
-  "description" : "Wildcard word. For example 'h?ll*'.",
-  "required" : false,
-  "type" : "string"
-};
-													var schema = schemaWrapper;
-
-
-
-
-													var view = new JSONSchemaView(schema,0);
-													var result = $('#d2e199_findGet_wildcardword');
-													result.empty();
-													result.append(view.render());
-
-
-
-
-
-												});
-												</script>
-												<div id="d2e199_findGet_wildcardword"></div>
+												<div id="d2e199_findGet_words"></div>
 </td>
 </tr>
 
@@ -1968,7 +1930,7 @@ try {
                                             <div class="tab-content">
                                                 <div class="tab-pane active" id="examples-Insert-insertPost-0-curl">
                                                     <pre class="prettyprint"><code class="language-bsh">
-curl -X <span style="text-transform: uppercase;">post</span> "http://localhost:8080/simpatico/api/insert"
+curl -X <span style="text-transform: uppercase;">post</span> "http://localhost:8080/simpatico/api/logs/insert"
 
 
 </code></pre>
@@ -2593,7 +2555,7 @@ try {
                                             <div class="tab-content">
                                                 <div class="tab-pane active" id="examples-Test-testGet-0-curl">
                                                     <pre class="prettyprint"><code class="language-bsh">
-curl -X <span style="text-transform: uppercase;">get</span> "http://localhost:8080/simpatico/api/test"
+curl -X <span style="text-transform: uppercase;">get</span> "http://localhost:8080/simpatico/api/logs/test"
 
 
 </code></pre>
@@ -2924,7 +2886,7 @@ try {
                                             <div class="tab-content">
                                                 <div class="tab-pane active" id="examples-Update-updatePut-0-curl">
                                                     <pre class="prettyprint"><code class="language-bsh">
-curl -X <span style="text-transform: uppercase;">put</span> "http://localhost:8080/simpatico/api/update"
+curl -X <span style="text-transform: uppercase;">put</span> "http://localhost:8080/simpatico/api/logs/update"
 
 
 </code></pre>
@@ -3508,7 +3470,7 @@ try {
             </div>
             <div id="generator">
                 <div class="content">
-                    Generated 2016-12-19T09:46:36.255Z
+                    Generated 2016-12-20T10:20:55.968Z
                 </div>
             </div>
         </div>

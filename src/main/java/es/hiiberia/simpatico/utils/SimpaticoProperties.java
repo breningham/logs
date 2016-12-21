@@ -7,12 +7,19 @@ import org.apache.log4j.Logger;
 
 public class SimpaticoProperties {
 
-	public static String simpaticoLogClients;
+	public static String simpaticoLogsClients;
+	public static String simpaticoAnalyticsClients;
 	public static String elasticSearchIp;
 	public static int elasticSearchPort;
 	public static String elasticSearchClusterName;
-	public static String elasticSearchIndex;
-	public static String elasticSearchType;
+	// Logs
+	public static String elasticSearchLogsIndex;
+	public static String elasticSearchLogsType;
+	public static String elasticSearchCreatedFieldName;
+	// Analytics
+	public static String elasticSearchAnalyticsIndex;
+	public static String elasticSearchAnalyticsType;
+	// Search
 	public static String elasticSearchFieldSearch;
 	
 	
@@ -23,14 +30,18 @@ public class SimpaticoProperties {
 		
 		try {
 			// Simpatico
-			simpaticoLogClients = RESOURCE_BUNDLE.getString("simpatico.log4j.clients");
+			simpaticoLogsClients = RESOURCE_BUNDLE.getString("simpatico.log4j.logs.clients");
+			simpaticoAnalyticsClients = RESOURCE_BUNDLE.getString("simpatico.log4j.analytics.clients");
 			
 			// Database
 			elasticSearchIp = RESOURCE_BUNDLE.getString("elasticsearch.ip");
 			elasticSearchPort = Integer.parseInt(RESOURCE_BUNDLE.getString("elasticsearch.port"));
 			elasticSearchClusterName = RESOURCE_BUNDLE.getString("elasticsearch.clustername");
-			elasticSearchIndex = RESOURCE_BUNDLE.getString("elasticsearch.index");
-			elasticSearchType = RESOURCE_BUNDLE.getString("elasticsearch.type");
+			elasticSearchLogsIndex = RESOURCE_BUNDLE.getString("elasticsearch.logs.index");
+			elasticSearchLogsType = RESOURCE_BUNDLE.getString("elasticsearch.logs.type");
+			elasticSearchCreatedFieldName = RESOURCE_BUNDLE.getString("elasticsearch.logs.created.field.name");
+			elasticSearchAnalyticsIndex = RESOURCE_BUNDLE.getString("elasticsearch.analytics.index");
+			elasticSearchAnalyticsType = RESOURCE_BUNDLE.getString("elasticsearch.analytics.type");
 			elasticSearchFieldSearch = RESOURCE_BUNDLE.getString("elasticsearch.search.field");
 			result = true;
 		} catch (MissingResourceException e) {
