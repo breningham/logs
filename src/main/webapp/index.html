@@ -1068,7 +1068,7 @@ namespace Example
 
                                                 <div class="tab-pane" id="examples-Delete-removeDelete-0-php">
                                                   <pre class="prettyprint"><code class="language-php">
-
+<?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new io.swagger.client\Api\DeleteApi();
@@ -1081,9 +1081,7 @@ try {
     echo 'Exception when calling DeleteApi->removeDelete: ', $e->getMessage(), PHP_EOL;
 }
 
-
                                                   </code></pre>
-
           </div>
 
                                             </div>
@@ -1470,7 +1468,7 @@ try {
                                             <div class="tab-content">
                                                 <div class="tab-pane active" id="examples-Find-findGet-0-curl">
                                                     <pre class="prettyprint"><code class="language-bsh">
-curl -X <span style="text-transform: uppercase;">get</span> "http://localhost:8080/simpatico/api/logs/find?words="
+curl -X <span style="text-transform: uppercase;">get</span> "http://localhost:8080/simpatico/api/logs/find?words=&sortasc=&sortdesc=&limit="
 
 
 </code></pre>
@@ -1492,8 +1490,11 @@ public class FindApiExample {
         
         FindApi apiInstance = new FindApi();
         String words = words_example; // String | Comma separated words. Espaces are allowed.
+        String sortasc = sortasc_example; // String | Created time ascending sort.
+        String sortdesc = sortdesc_example; // String | Created time descending sort.
+        BigDecimal limit = 3.4; // BigDecimal | Limit the number of results.
         try {
-            inline_response_200 result = apiInstance.findGet(words);
+            inline_response_200 result = apiInstance.findGet(words, sortasc, sortdesc, limit);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling FindApi#findGet");
@@ -1515,8 +1516,11 @@ public class FindApiExample {
     public static void main(String[] args) {
         FindApi apiInstance = new FindApi();
         String words = words_example; // String | Comma separated words. Espaces are allowed.
+        String sortasc = sortasc_example; // String | Created time ascending sort.
+        String sortdesc = sortdesc_example; // String | Created time descending sort.
+        BigDecimal limit = 3.4; // BigDecimal | Limit the number of results.
         try {
-            inline_response_200 result = apiInstance.findGet(words);
+            inline_response_200 result = apiInstance.findGet(words, sortasc, sortdesc, limit);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling FindApi#findGet");
@@ -1538,11 +1542,17 @@ public class FindApiExample {
                                                     <pre class="prettyprint"><code class="language-cpp">
 
 String *words = words_example; // Comma separated words. Espaces are allowed. (optional)
+String *sortasc = sortasc_example; // Created time ascending sort. (optional)
+String *sortdesc = sortdesc_example; // Created time descending sort. (optional)
+BigDecimal *limit = 3.4; // Limit the number of results. (optional)
 
 FindApi *apiInstance = [[FindApi alloc] init];
 
 // Find documents
 [apiInstance findGetWith:words
+    sortasc:sortasc
+    sortdesc:sortdesc
+    limit:limit
               completionHandler: ^(inline_response_200 output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -1561,7 +1571,10 @@ var  = require('');
 var api = new .FindApi()
 
 var opts = { 
-  'words': words_example // {String} Comma separated words. Espaces are allowed.
+  'words': words_example, // {String} Comma separated words. Espaces are allowed.
+  'sortasc': sortasc_example, // {String} Created time ascending sort.
+  'sortdesc': sortdesc_example, // {String} Created time descending sort.
+  'limit': 3.4 // {BigDecimal} Limit the number of results.
 };
 
 var callback = function(error, data, response) {
@@ -1597,11 +1610,14 @@ namespace Example
             
             var apiInstance = new FindApi();
             var words = words_example;  // String | Comma separated words. Espaces are allowed. (optional) 
+            var sortasc = sortasc_example;  // String | Created time ascending sort. (optional) 
+            var sortdesc = sortdesc_example;  // String | Created time descending sort. (optional) 
+            var limit = 3.4;  // BigDecimal | Limit the number of results. (optional) 
 
             try
             {
                 // Find documents
-                inline_response_200 result = apiInstance.findGet(words);
+                inline_response_200 result = apiInstance.findGet(words, sortasc, sortdesc, limit);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1623,9 +1639,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new io.swagger.client\Api\FindApi();
 $words = words_example; // String | Comma separated words. Espaces are allowed.
+$sortasc = sortasc_example; // String | Created time ascending sort.
+$sortdesc = sortdesc_example; // String | Created time descending sort.
+$limit = 3.4; // BigDecimal | Limit the number of results.
 
 try {
-    $result = $api_instance->findGet($words);
+    $result = $api_instance->findGet($words, $sortasc, $sortdesc, $limit);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling FindApi->findGet: ', $e->getMessage(), PHP_EOL;
@@ -1686,6 +1705,106 @@ try {
 												});
 												</script>
 												<div id="d2e199_findGet_words"></div>
+</td>
+</tr>
+
+                                                        <tr><td style="width:150px;">sortasc</td>
+<td>
+
+
+<script>
+												$(document).ready(function() {
+													var schemaWrapper = {
+  "name" : "sortasc",
+  "in" : "query",
+  "description" : "Created time ascending sort.",
+  "required" : false,
+  "type" : "string"
+};
+													var schema = schemaWrapper;
+
+
+
+
+													var view = new JSONSchemaView(schema,0);
+													var result = $('#d2e199_findGet_sortasc');
+													result.empty();
+													result.append(view.render());
+
+
+
+
+
+												});
+												</script>
+												<div id="d2e199_findGet_sortasc"></div>
+</td>
+</tr>
+
+                                                        <tr><td style="width:150px;">sortdesc</td>
+<td>
+
+
+<script>
+												$(document).ready(function() {
+													var schemaWrapper = {
+  "name" : "sortdesc",
+  "in" : "query",
+  "description" : "Created time descending sort.",
+  "required" : false,
+  "type" : "string"
+};
+													var schema = schemaWrapper;
+
+
+
+
+													var view = new JSONSchemaView(schema,0);
+													var result = $('#d2e199_findGet_sortdesc');
+													result.empty();
+													result.append(view.render());
+
+
+
+
+
+												});
+												</script>
+												<div id="d2e199_findGet_sortdesc"></div>
+</td>
+</tr>
+
+                                                        <tr><td style="width:150px;">limit</td>
+<td>
+
+
+<script>
+												$(document).ready(function() {
+													var schemaWrapper = {
+  "name" : "limit",
+  "in" : "query",
+  "description" : "Limit the number of results.",
+  "required" : false,
+  "type" : "number",
+  "format" : "integer"
+};
+													var schema = schemaWrapper;
+
+
+
+
+													var view = new JSONSchemaView(schema,0);
+													var result = $('#d2e199_findGet_limit');
+													result.empty();
+													result.append(view.render());
+
+
+
+
+
+												});
+												</script>
+												<div id="d2e199_findGet_limit"></div>
 </td>
 </tr>
 
@@ -3470,7 +3589,7 @@ try {
             </div>
             <div id="generator">
                 <div class="content">
-                    Generated 2016-12-20T10:20:55.968Z
+                    Generated 2016-12-23T11:57:26.324Z
                 </div>
             </div>
         </div>
