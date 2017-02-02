@@ -1,7 +1,5 @@
 package es.hiiberia.simpatico.rest;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +45,12 @@ import static org.elasticsearch.common.xcontent.XContentFactory.*;
 @Path("/logs")
 public class SimpaticoResourceLogs {
 
+	private static String ES_INDEX = SimpaticoProperties.elasticSearchLogsIndex;
+	private static String ES_TYPE =  SimpaticoProperties.elasticSearchLogsType;
+	private static String ES_FIELD_SEARCH = SimpaticoProperties.elasticSearchFieldSearch;
+	private static String FILE_LOG = SimpaticoProperties.simpaticoLog_Logs;
+	private static String THIS_RESOURCE = "Logs";
+	
 	
     @GET
     @Path("/find")
@@ -54,14 +58,14 @@ public class SimpaticoResourceLogs {
     public Response find(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
         	
     	ArrayList<String> literalWords = new ArrayList<>();
-    	int limit = 10000; // Workaround. Limit from elastic search
-    	String fieldSort = "";
+    	int limit = 0; 
+    	String fieldSortName = "";
     	SortOrder sortOrder = SortOrder.ASC; // Inicialize. If fieldSort is empty dont sort
     	
     	try {
     		// Query params
 	    	Map<String, List<String>> queryParams = uriInfo.getQueryParameters();
-	    	Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+	    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
 	    	 	
 	    	// Process query params
 	        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
@@ -80,18 +84,17 @@ public class SimpaticoResourceLogs {
 	            } else if (key.contentEquals(SimpaticoResourceUtils.limitParam)) {
 	            	if (!values.isEmpty() && Utils.isInteger(values.get(0))) {
 	            		limit = Integer.parseInt(values.get(0));
-	            		Logger.getRootLogger().info("limit!! " + limit);
 	            	}
 	            // Sort
 	            } else if (key.contentEquals(SimpaticoResourceUtils.sortASCParam)) {
-	            	fieldSort = SimpaticoProperties.elasticSearchCreatedFieldName;
+	            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
 	            	sortOrder = SortOrder.ASC;
 	            } else if (key.contentEquals(SimpaticoResourceUtils.sortDESCParam)) {
-	            	fieldSort = SimpaticoProperties.elasticSearchCreatedFieldName;
+	            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
 	            	sortOrder = SortOrder.DESC;
 	            } else {
 	            	// BAD PARAMS
-	            	Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+	            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
 	    			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badParamsRequestResponse);
 	            }
 	        }
@@ -99,18 +102,17 @@ public class SimpaticoResourceLogs {
 	        SearchResponse responseES;
 	        // No params, so empty request -> return full documents stored
 	        if (literalWords.isEmpty()) {
-	        	responseES = ElasticSearchConnector.getInstance().searchAllData(SimpaticoProperties.elasticSearchLogsIndex, SimpaticoProperties.elasticSearchFieldSearch, fieldSort, sortOrder, limit);
+	        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, fieldSortName, sortOrder, limit);
 	        } else {
-	        	responseES = ElasticSearchConnector.getInstance().searchData(SimpaticoProperties.elasticSearchLogsIndex, SimpaticoProperties.elasticSearchFieldSearch, literalWords, fieldSort, sortOrder, limit);
+	        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_FIELD_SEARCH, literalWords, fieldSortName, sortOrder, limit);
 	        }
 	        
 	        return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.searchResponse2JSONResponse(responseES));
     	} catch (Exception e) {
     		// Print the exception and its trace on log
-    		Logger.getRootLogger().error("Exception: " + e.getMessage());
-			StringWriter errors = new StringWriter();
-    		e.printStackTrace(new PrintWriter(errors));
-    		Logger.getRootLogger().error(errors.toString());
+    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
     		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
     	}
     }
@@ -133,14 +135,14 @@ public class SimpaticoResourceLogs {
     		
     		JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
     		if (jsonObject != null) {
-    			Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).info("Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData); // Converted in Utils.createJSONStringIfValid
+    			Logger.getLogger(FILE_LOG).info("Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData); // Converted in Utils.createJSONStringIfValid
                 
                 // Elastic search connector
     			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
     			
                 // Check if exist index
-    			if (!connector.existsIndex(SimpaticoProperties.elasticSearchLogsIndex)) {
-    				connector.createIndexWithDateField(SimpaticoProperties.elasticSearchLogsIndex, SimpaticoProperties.elasticSearchLogsType, SimpaticoProperties.elasticSearchCreatedFieldName);
+    			if (!connector.existsIndex(ES_INDEX)) {
+    				connector.createIndexWithDateField(ES_INDEX, ES_TYPE, SimpaticoProperties.elasticSearchCreatedFieldName);
     			}
     			
     			// Add created time in utc
@@ -151,10 +153,10 @@ public class SimpaticoResourceLogs {
     				id = jsonObject.getString(SimpaticoResourceUtils._idParam);
     				jsonObject.remove(SimpaticoResourceUtils._idParam);
     				// Insert data with id
-    				responseInsert = connector.insertDocument(SimpaticoProperties.elasticSearchLogsIndex, SimpaticoProperties.elasticSearchLogsType, id, jsonObject.toString());
+    				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, id, jsonObject.toString());
     			} else {
     				// Insert data without id
-    				responseInsert = connector.insertDocument(SimpaticoProperties.elasticSearchLogsIndex, SimpaticoProperties.elasticSearchLogsType, jsonObject.toString());
+    				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, jsonObject.toString());
     			}
     			
     			if (responseInsert.getResult() == Result.UPDATED) {
@@ -163,15 +165,16 @@ public class SimpaticoResourceLogs {
 					response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverCreatedCode, SimpaticoResourceUtils.dataInsertedESResponse);
 				}
     		} else {
-    			Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
     			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
     		}
     		
     		return response;
     	} catch (Exception e) {
-			StringWriter err = new StringWriter();
-			e.printStackTrace(new PrintWriter(err));
-			Logger.getRootLogger().error(err.toString());
+    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
+    		
     		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
     	}
     }
@@ -210,16 +213,16 @@ public class SimpaticoResourceLogs {
     		}
     		
     		if (badRequest) {
-    			Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).info("[BAD REQUEST] Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
     			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
     		} else {
     			// Creates JSON from string content to convert to XContenBuilder
     			JSONObject jsonContent = Utils.createJSONObjectIfValid(content);
     			if (jsonContent == null) { // Content not on Json format
-    				Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).info("[BAD REQUEST] Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+    				Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
     				response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
     			} else {
-    				Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).info("Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+    				Logger.getLogger(FILE_LOG).info("Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
     				
     				String message = jsonContent.toString();
         			XContentParser parser = XContentFactory.xContent(XContentType.JSON).createParser(message.getBytes());
@@ -230,7 +233,7 @@ public class SimpaticoResourceLogs {
         			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
         			
         			// Update data
-        			UpdateResponse update = connector.update(SimpaticoProperties.elasticSearchLogsIndex, SimpaticoProperties.elasticSearchLogsType, id, builder);
+        			UpdateResponse update = connector.update(ES_INDEX, ES_TYPE, id, builder);
         			if (update.getResult() == Result.CREATED) {
         				response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverCreatedCode, SimpaticoResourceUtils.dataInsertedESResponse);
 	    			} else if (update.getResult() == Result.UPDATED) {
@@ -243,23 +246,25 @@ public class SimpaticoResourceLogs {
 
     		return response;
     	} catch (DocumentMissingException e) {
-    		Logger.getRootLogger().info("Document missing, inserting...");
+    		Logger.getLogger(FILE_LOG).info("Document missing, inserting...");
     		
     		// Include in json _id to insert with these id
     		JSONObject jsonInsertContent = Utils.createJSONObjectIfValid(content);
     		try {
 				jsonInsertContent.put(SimpaticoResourceUtils._idParam, id);
 			} catch (JSONException e1) {
-				StringWriter err = new StringWriter();
-				e1.printStackTrace(new PrintWriter(err));
-				Logger.getRootLogger().error(err.toString());
+				Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e1.getMessage());
+	    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e1.getMessage());
+				Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e1.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e1));
+	    		
 				return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
 			}
     		return this.insert(request, jsonInsertContent.toString());
     	} catch (Exception e) {
-			StringWriter err = new StringWriter();
-			e.printStackTrace(new PrintWriter(err));
-			Logger.getRootLogger().error(err.toString());
+    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
+    		
 			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
     	}
     }
@@ -293,22 +298,22 @@ public class SimpaticoResourceLogs {
     		}
     		
     		if (badRequest) {
-    			Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).info("[BAD REQUEST] Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
     			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
     			
     		} else {    		
-    			Logger.getLogger(SimpaticoProperties.simpaticoLogsClients).info("Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData); 
+    			Logger.getLogger(FILE_LOG).info("Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData); 
     			
 	            // Elastic search connector
 				ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
 				
 	            // Check if exist index
-				if (!connector.existsIndex(SimpaticoProperties.elasticSearchLogsIndex)) {
-					connector.createIndexWithDateField(SimpaticoProperties.elasticSearchLogsIndex, SimpaticoProperties.elasticSearchLogsType, SimpaticoProperties.elasticSearchCreatedFieldName);
+				if (!connector.existsIndex(ES_INDEX)) {
+					connector.createIndexWithDateField(ES_INDEX, ES_TYPE, SimpaticoProperties.elasticSearchCreatedFieldName);
 				}
 				
 				// Delete data
-				DeleteResponse delete = connector.deleteDocument(SimpaticoProperties.elasticSearchLogsIndex, SimpaticoProperties.elasticSearchLogsType, id);
+				DeleteResponse delete = connector.deleteDocument(ES_INDEX, ES_TYPE, id);
 				if (delete.getResult() == Result.NOT_FOUND) {
 					response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverNoContentCode, "");
 				} else {
@@ -317,20 +322,21 @@ public class SimpaticoResourceLogs {
     		}
     		return response;
     	} catch (Exception e) {
-			StringWriter err = new StringWriter();
-			e.printStackTrace(new PrintWriter(err));
-			Logger.getRootLogger().error(err.toString());
+    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
+    		
 			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
     	}
     }
        
     
-	/** Test Method **/
+    /** Test Method **/
     @GET
 	@Path("/test")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response test() {
-    	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO LOGS API!");
+    	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API!");
 	}
     
     

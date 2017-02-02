@@ -7,11 +7,17 @@ import org.apache.log4j.Logger;
 
 public class SimpaticoProperties {
 
-	public static String simpaticoLogsClients;
-	public static String simpaticoAnalyticsClients;
+	public static String simpaticoLog_Error = "errors";
+	public static String simpaticoLog_Logs =  "logs";
+	public static String simpaticoLog_Analytics = "analytics";
+	
+	public static String simpaticoLog_Test =  "test";
+	
+	// ES config
 	public static String elasticSearchIp;
 	public static int elasticSearchPort;
 	public static String elasticSearchClusterName;
+	
 	// Logs
 	public static String elasticSearchLogsIndex;
 	public static String elasticSearchLogsType;
@@ -28,20 +34,18 @@ public class SimpaticoProperties {
 		
 		ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("simpatico");
 		
-		try {
-			// Simpatico
-			simpaticoLogsClients = RESOURCE_BUNDLE.getString("simpatico.log4j.logs.clients");
-			simpaticoAnalyticsClients = RESOURCE_BUNDLE.getString("simpatico.log4j.analytics.clients");
-			
+		try {			
 			// Database
 			elasticSearchIp = RESOURCE_BUNDLE.getString("elasticsearch.ip");
 			elasticSearchPort = Integer.parseInt(RESOURCE_BUNDLE.getString("elasticsearch.port"));
 			elasticSearchClusterName = RESOURCE_BUNDLE.getString("elasticsearch.clustername");
+			
 			elasticSearchLogsIndex = RESOURCE_BUNDLE.getString("elasticsearch.logs.index");
 			elasticSearchLogsType = RESOURCE_BUNDLE.getString("elasticsearch.logs.type");
-			elasticSearchCreatedFieldName = RESOURCE_BUNDLE.getString("elasticsearch.logs.created.field.name");
 			elasticSearchAnalyticsIndex = RESOURCE_BUNDLE.getString("elasticsearch.analytics.index");
 			elasticSearchAnalyticsType = RESOURCE_BUNDLE.getString("elasticsearch.analytics.type");
+			
+			elasticSearchCreatedFieldName = RESOURCE_BUNDLE.getString("elasticsearch.created.field.name");
 			elasticSearchFieldSearch = RESOURCE_BUNDLE.getString("elasticsearch.search.field");
 			result = true;
 		} catch (MissingResourceException e) {

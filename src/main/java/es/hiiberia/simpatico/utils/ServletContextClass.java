@@ -16,11 +16,15 @@ public class ServletContextClass implements ServletContextListener {
 			throw new InternalErrorException("Problems with SIMPATICO properties file");
 		}
 
-		// Start MQTT broker receiver		
-		Logger.getRootLogger().info("SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		// Start SIMPATICO
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Logs).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Analytics).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getRootLogger().info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
 	}	
 	
 	public void contextDestroyed(ServletContextEvent arg0) {
+		// Stop SIMPATICO		
 		Logger.getRootLogger().info("SIMPATICO STOPPED");		
 	}
 }
