@@ -10,6 +10,7 @@ public class SimpaticoProperties {
 	public static String simpaticoLog_Error = "errors";
 	public static String simpaticoLog_Logs =  "logs";
 	public static String simpaticoLog_Analytics = "analytics";
+	public static String simpaticoLog_Piwik =  "piwik";
 	
 	public static String simpaticoLog_Test =  "test";
 	

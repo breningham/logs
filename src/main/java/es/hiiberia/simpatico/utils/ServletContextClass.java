@@ -19,6 +19,7 @@ public class ServletContextClass implements ServletContextListener {
 		// Start SIMPATICO
 		Logger.getLogger(SimpaticoProperties.simpaticoLog_Logs).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
 		Logger.getLogger(SimpaticoProperties.simpaticoLog_Analytics).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Piwik).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
 		Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
 		Logger.getRootLogger().info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
 	}	
