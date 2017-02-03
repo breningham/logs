@@ -21,6 +21,11 @@ public class SimpaticoProperties {
 	public static String elasticSearchAnalyticsType;
 	// Search
 	public static String elasticSearchFieldSearch;
+	// Piwik
+	public static String piwikApiUrl;
+	public static String piwikAuthToken;
+	public static String elasticSearchPiwikIndex;
+	public static String elasticSearchPiwikType;
 	
 	
 	public static boolean getStrings() {
@@ -43,6 +48,13 @@ public class SimpaticoProperties {
 			elasticSearchAnalyticsIndex = RESOURCE_BUNDLE.getString("elasticsearch.analytics.index");
 			elasticSearchAnalyticsType = RESOURCE_BUNDLE.getString("elasticsearch.analytics.type");
 			elasticSearchFieldSearch = RESOURCE_BUNDLE.getString("elasticsearch.search.field");
+			
+			// Piwik
+			piwikApiUrl = RESOURCE_BUNDLE.getString("piwik.api_url");
+			piwikAuthToken = RESOURCE_BUNDLE.getString("piwik.auth_token");
+			elasticSearchPiwikIndex = RESOURCE_BUNDLE.getString("elasticsearch.piwik.index");
+			elasticSearchPiwikType = RESOURCE_BUNDLE.getString("elasticsearch.piwik.type");
+			
 			result = true;
 		} catch (MissingResourceException e) {
 			e.printStackTrace();
