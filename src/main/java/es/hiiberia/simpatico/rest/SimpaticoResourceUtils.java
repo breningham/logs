@@ -1,5 +1,8 @@
 package es.hiiberia.simpatico.rest;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -46,6 +49,21 @@ public class SimpaticoResourceUtils {
 	public static int serverBadRequestCode = 400;
 	public static int serverInternalServerErrorCode = 500;
 	
+	
+	public static String exceptionStringify(Exception e) {
+		String rt = "Exception message: " + e.getMessage() + "\n";
+		StringWriter error = new StringWriter();
+		e.printStackTrace(new PrintWriter(error));
+		
+		return rt += error.toString();
+	}
+	
+	public static String exceptionStringifyStack(Exception e) {
+		StringWriter error = new StringWriter();
+		e.printStackTrace(new PrintWriter(error));
+		
+		return error.toString();
+	}
 	
 	/**
      * Method to convert elastic search response query to JSON response web service 

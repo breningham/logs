@@ -42,14 +42,14 @@ import es.hiiberia.simpatico.utils.Utils;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.*;
 
-@Path("/analytics")
-public class SimpaticoResourceAnalytics {
+@Path("/testanalytics")
+public class SimpaticoResourceTest {
 
-	private static String ES_INDEX = SimpaticoProperties.elasticSearchAnalyticsIndex;
-	private static String ES_TYPE =  SimpaticoProperties.elasticSearchAnalyticsType;
+	private static String ES_INDEX = "test";
+	private static String ES_TYPE =  "json";
 	private static String ES_FIELD_SEARCH = SimpaticoProperties.elasticSearchFieldSearch;
-	private static String FILE_LOG = SimpaticoProperties.simpaticoLog_Analytics;
-	private static String THIS_RESOURCE = "Analytics";
+	private static String FILE_LOG = SimpaticoProperties.simpaticoLog_Test;
+	private static String THIS_RESOURCE = "Test";
 	
 	
     @GET

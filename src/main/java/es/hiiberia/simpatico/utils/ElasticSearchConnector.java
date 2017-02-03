@@ -2,10 +2,12 @@ package es.hiiberia.simpatico.utils;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -38,6 +40,7 @@ public class ElasticSearchConnector {
 	// Public
 	public static String AllFieldsES = "_all";
 		
+	private static int DEFAULT_SIZE_LIMIT_ES = 1000;
 		
 	// Private constructor
 	private ElasticSearchConnector() throws Exception {
@@ -73,9 +76,8 @@ public class ElasticSearchConnector {
 		return client;
 	}
 	
-	public boolean existsIndex (String index) {
-        return client.admin().indices().prepareExists(index).execute().actionGet().isExists();
-	}
+	
+	/* Indices */
 	
 	public void createIndex (String index) {
 		Logger.getRootLogger().info("Elastic search: Creating index: " + index);		
@@ -119,6 +121,23 @@ public class ElasticSearchConnector {
 		}
 	}
 	
+	public List<String> getAllIndex () {
+		
+		String[] index = client.admin()
+							.indices()
+							.getIndex(new GetIndexRequest())
+							.actionGet()
+							.getIndices();
+		
+		return Arrays.asList(index);
+	}
+	
+	public boolean existsIndex (String index) {
+        return client.admin().indices().prepareExists(index).execute().actionGet().isExists();
+	}
+	
+	/** Insert **/
+	
 	public IndexResponse insertDocument (String index, String type, String data) throws IOException {
 		Logger.getRootLogger().info("Elastic search: Inserting document (index: " + index + ", type: " + type + ", data: " + data + ")");
 		return client.prepareIndex(index , type).setSource(data).get();
@@ -134,67 +153,83 @@ public class ElasticSearchConnector {
 		return client.prepareIndex(index , type).setSource(data).get();
 	}
 	
+	/** Delete **/
 	public DeleteResponse deleteDocument (String index, String type, String id) throws IOException {
 		Logger.getRootLogger().info("Elastic search: Deleting document (index: " + index + ", type: " + type + ", id: " + id + ")");
 		return client.prepareDelete(index , type, id).get();
 	}
 	
+	/** Update **/
 	public UpdateResponse update (String index, String type, String id, XContentBuilder data) throws IOException {
 		Logger.getRootLogger().info("Elastic search: Updating document (index: " + index + ", type: " + type + ", id: " + id + ")");
 		return client.prepareUpdate(index , type, id).setDoc(data).get();
 	}
 	
-	public SearchResponse searchData (String index, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {
-		
-		try {
-			Logger.getRootLogger().info("Elastic search: Searching (index: " + index + ", field: " + field + ", words: " + words + ")");		
+	/** Search **/
+	
+	// TODO check null when no expect null parameters
+	public SearchResponse search(String index) throws IOException {
+		return searchES (index, null, null, null, 0);
+	}
 
-			BoolQueryBuilder boolQuery = new BoolQueryBuilder();
-			for (String word : words) {
-				boolQuery.should(QueryBuilders.matchQuery(field, word));
-			}
-			
-			SearchRequestBuilder searchRequest = client.prepareSearch(index)
-												        .setQuery(boolQuery)
-												        .setSize(limit);
-			if (fieldSort != null && !fieldSort.isEmpty()) {
-				searchRequest.addSort(fieldSort, ord);
-			}
-			SearchResponse response = searchRequest.get();
-		
-			return response;
-		} catch (IndexNotFoundException e) {
-			Logger.getRootLogger().warn("Elastic search: Searching and there are not index created previusly (index: " + index + ", field: " + field + ", words: " + words + ")");		
-			return new SearchResponse(InternalSearchResponse.empty(), "", 0, 0, 0, new ShardSearchFailure[0]); // Empty response
-		} 
+	public SearchResponse search(String index, String fieldSort, SortOrder ord) throws IOException {
+		return searchES (index, null, fieldSort, ord, 0);
 	}
 	
-	public SearchResponse searchAllData (String index, String field, String fieldSort, SortOrder ord, int limit) throws IOException {
+	public SearchResponse search(String index, String fieldSort, SortOrder ord, int limit) throws IOException {
+		return searchES (index, null, fieldSort, ord, limit);
+	}
+
+	public SearchResponse search(String index, int limit) throws IOException {
+		return searchES (index, null, null, null, limit);		
+	}
+	
+	public SearchResponse search(String index, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {
+		
+		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+		for (String word : words) {
+			boolQuery.should(QueryBuilders.matchQuery(field, word));
+		}
+		
+		return searchES (index, boolQuery, fieldSort, ord, limit);
+	}
+	
+	private SearchResponse searchES (String index, QueryBuilder qb, String fieldSort, SortOrder ord, int limit) throws IOException {
 		
 		try {
-			Logger.getRootLogger().info("Elastic search: Searching all data (index: " + index + ", field: " + field + ")");		
+			Logger.getRootLogger().info("Elastic search: Searching all data (index: " + index + ")");		
 
-			// Specific words   
-			QueryBuilder qb = QueryBuilders.matchAllQuery();
-	
-			SearchRequestBuilder searchRequest = client.prepareSearch(index)
-												        .setQuery(qb)
-												        .setSize(limit);
+			SearchRequestBuilder searchRequest = client.prepareSearch(index);
 			
+			// Add query
+			if (qb != null) {
+				searchRequest.setQuery(qb);
+			} else {
+				searchRequest.setQuery(QueryBuilders.matchAllQuery());
+			}
+
+			// Add field sort
 			if (fieldSort != null && !fieldSort.isEmpty()) {
 				searchRequest.addSort(fieldSort, ord);
+			}
+			
+			// Add limit
+			if (limit > 0) {
+				searchRequest.setSize(limit);
+			} else {
+				searchRequest.setSize(DEFAULT_SIZE_LIMIT_ES);
 			}
 			
 			SearchResponse response = searchRequest.get();
 		
 			return response;
 		} catch (IndexNotFoundException e) {
-			Logger.getRootLogger().warn("Elastic search: Searching and there are not index created previusly (index: " + index + ", field: " + field + ")");		
+			Logger.getRootLogger().warn("Elastic search: Searching and there are not index created previusly (index: " + index + ")");		
 			return createEmptySearchResponse();
 		} 
 	}
 	
-	public static SearchResponse createEmptySearchResponse() {
+	private static SearchResponse createEmptySearchResponse() {
 		return new SearchResponse(InternalSearchResponse.empty(), "", 0, 0, 0, new ShardSearchFailure[0]); // Empty response
 	}
 }
