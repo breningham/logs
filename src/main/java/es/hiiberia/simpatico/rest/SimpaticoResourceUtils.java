@@ -15,6 +15,8 @@ public class SimpaticoResourceUtils {
 
 	public static String internalErrorResponse = "Internal error";
 	public static String badPOSTRequestResponse = "Bad request. Post data must be json";
+	public static String badPOSTPiwikBodyResponse = "JSON body must have a value for key 'method'";
+	public static String badPOSTPiwikMethod = "Bad 'method' value. Must be a valid one";
 	public static String badParamsRequestResponse = "Bad params request.";
 	public static String dataInsertedESResponse = "Data inserted";
 	public static String dataUpdatedESResponse = "Data updated";
