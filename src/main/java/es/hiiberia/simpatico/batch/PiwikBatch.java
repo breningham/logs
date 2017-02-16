@@ -31,7 +31,6 @@ public class PiwikBatch {
 	// Examples of methods
 	private static String[] methods = {"VisitorInterest.getNumberOfVisitsPerVisitDuration",
 									   "DevicesDetection.getBrowsers",
-									   "Live.getCounters",
 									   "UserCountry.getCountry",
 									   "VisitsSummary.getUniqueVisitors"};
 	private int currentMethod = -1;
@@ -135,7 +134,7 @@ public class PiwikBatch {
 	
 	private int getNextMethod() {
 		currentMethod++;
-		if (currentMethod == 5) currentMethod = 0;
+		if (currentMethod == methods.length) currentMethod = 0;
 		
 		return currentMethod;
 	}
