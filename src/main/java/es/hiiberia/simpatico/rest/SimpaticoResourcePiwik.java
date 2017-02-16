@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -17,8 +16,6 @@ import javax.ws.rs.core.UriInfo;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
-import jodd.util.ArraysUtil;
-
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -119,81 +116,81 @@ public class SimpaticoResourcePiwik {
 	 * @param postData Must have a value for "method". Optional: period (default "day") and date (default "today")
 	 * @return
 	 */
-	@POST
-	@Path("/insert")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response insert(@Context HttpServletRequest request, String postData) {
-    	try {
-			IndexResponse responseInsert;
-    		Response response;
-    		
-    		JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
-    		if (jsonObject != null) {
-    			// Get the "method" value
-    			String method = jsonObject.optString("method");
-    			if (method.isEmpty()) {
-    				Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
-        			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTPiwikBodyResponse);
-    			} else {
-    				// Check if "method" is valid
-    				if (!ArraysUtil.contains(methods, method)) {
-    					Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
-            			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTPiwikMethod);
-    				} else {
-	    				// Get info from PIWIK
-    					String period = (jsonObject.optString("period") != "") ? jsonObject.optString("period") : "day";
-    					String date = (jsonObject.optString("date") != "") ? jsonObject.optString("date") : "today";
-    					
-	    				JSONArray piwikResponse = Utils.createJSONArrayIfValid(callPiwikAPI(method, period, date));
-	    				if (piwikResponse != null) {
-	    					JSONObject piwikRes = new JSONObject().put("data", piwikResponse);
-	    					
-			                // Elastic search connector
-			    			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
-			    			
-			                // Check if exist index
-			    			if (!connector.existsIndex(ES_INDEX)) {
-			    				connector.createIndexWithDateField(ES_INDEX, ES_TYPE, SimpaticoProperties.elasticSearchCreatedFieldName);
-			    			}
-			    			
-			    			// Add created time in utc
-			    			piwikRes.put(SimpaticoProperties.elasticSearchCreatedFieldName, new DateTime(new Date()).withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-			    			
-			    			// Check if "_id" param inside
-			    			if (piwikRes.has(SimpaticoResourceUtils._idParam)) {
-			    				String id = piwikRes.getString(SimpaticoResourceUtils._idParam);
-			    				piwikRes.remove(SimpaticoResourceUtils._idParam);
-			    				// Insert data with id
-			    				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, id, piwikRes.toString());
-			    			} else {
-			    				// Insert data without id
-			    				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, piwikRes.toString());
-			    			}
-			    			
-			    			if (responseInsert.getResult() == Result.UPDATED) {
-								response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, SimpaticoResourceUtils.dataUpdatedESResponse);
-							} else {
-								response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverCreatedCode, SimpaticoResourceUtils.dataInsertedESResponse);
-							}
-	    				} else {
-	    					response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-	    				}
-    				}
-    			}
-    		} else {
-    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
-    			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTPiwikBodyResponse);
-    		}
-    		
-    		return response;
-    	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-    	}
-    }
+//	@POST
+//	@Path("/insert")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response insert(@Context HttpServletRequest request, String postData) {
+//    	try {
+//			IndexResponse responseInsert;
+//    		Response response;
+//    		
+//    		JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+//    		if (jsonObject != null) {
+//    			// Get the "method" value
+//    			String method = jsonObject.optString("method");
+//    			if (method.isEmpty()) {
+//    				Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+//        			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTPiwikBodyResponse);
+//    			} else {
+//    				// Check if "method" is valid
+//    				if (!ArraysUtil.contains(methods, method)) {
+//    					Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+//            			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTPiwikMethod);
+//    				} else {
+//	    				// Get info from PIWIK
+//    					String period = (jsonObject.optString("period") != "") ? jsonObject.optString("period") : "day";
+//    					String date = (jsonObject.optString("date") != "") ? jsonObject.optString("date") : "today";
+//    					
+//	    				JSONArray piwikResponse = Utils.createJSONArrayIfValid(callPiwikAPI(method, period, date));
+//	    				if (piwikResponse != null) {
+//	    					JSONObject piwikRes = new JSONObject().put("data", piwikResponse);
+//	    					
+//			                // Elastic search connector
+//			    			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
+//			    			
+//			                // Check if exist index
+//			    			if (!connector.existsIndex(ES_INDEX)) {
+//			    				connector.createIndexWithDateField(ES_INDEX, ES_TYPE, SimpaticoProperties.elasticSearchCreatedFieldName);
+//			    			}
+//			    			
+//			    			// Add created time in utc
+//			    			piwikRes.put(SimpaticoProperties.elasticSearchCreatedFieldName, new DateTime(new Date()).withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+//			    			
+//			    			// Check if "_id" param inside
+//			    			if (piwikRes.has(SimpaticoResourceUtils._idParam)) {
+//			    				String id = piwikRes.getString(SimpaticoResourceUtils._idParam);
+//			    				piwikRes.remove(SimpaticoResourceUtils._idParam);
+//			    				// Insert data with id
+//			    				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, id, piwikRes.toString());
+//			    			} else {
+//			    				// Insert data without id
+//			    				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, piwikRes.toString());
+//			    			}
+//			    			
+//			    			if (responseInsert.getResult() == Result.UPDATED) {
+//								response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, SimpaticoResourceUtils.dataUpdatedESResponse);
+//							} else {
+//								response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverCreatedCode, SimpaticoResourceUtils.dataInsertedESResponse);
+//							}
+//	    				} else {
+//	    					response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+//	    				}
+//    				}
+//    			}
+//    		} else {
+//    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+//    			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTPiwikBodyResponse);
+//    		}
+//    		
+//    		return response;
+//    	} catch (Exception e) {
+//    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+//    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+//			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
+//    		
+//    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+//    	}
+//    }
 	
 	@GET
 	@Path("/testVisitsDuration")
