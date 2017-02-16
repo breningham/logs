@@ -7,6 +7,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
+import es.hiiberia.simpatico.batch.PiwikBatch;
 import es.hiiberia.simpatico.rest.InternalErrorException;
 
 public class ServletContextClass implements ServletContextListener {
@@ -17,6 +18,8 @@ public class ServletContextClass implements ServletContextListener {
 		}
 
 		// Start SIMPATICO
+		PiwikBatch.getInstance(); // Start getting data from Piwik
+		
 		Logger.getLogger(SimpaticoProperties.simpaticoLog_Logs).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
 		Logger.getLogger(SimpaticoProperties.simpaticoLog_Analytics).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
 		Logger.getLogger(SimpaticoProperties.simpaticoLog_Piwik).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
