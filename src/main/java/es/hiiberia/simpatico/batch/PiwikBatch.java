@@ -62,15 +62,28 @@ public class PiwikBatch {
     					String date = "today";
     					String method = methods[getNextMethod()];
     					IndexResponse responseInsert;
+    					JSONObject piwikRes = null;
     					
     					// Make piwik request
-    					JSONArray piwikResponse = Utils.createJSONArrayIfValid(callPiwikAPI(method, period, date));
-    					if (piwikResponse != null && piwikResponse.length() != 0) {
-    						try {
-	    						JSONObject piwikRes = new JSONObject()
-	    												.put("method", method)
-	    												.put("data", piwikResponse);
-	    						// Elastic search connector
+    					try {
+    						// The response can be an Array or an Object. Both are valid responses
+    						String apiRes = callPiwikAPI(method, period, date);
+	    					JSONArray piwikArrayResponse = Utils.createJSONArrayIfValid(apiRes);
+	    					if (piwikArrayResponse == null) {
+	    						JSONObject piwikObjectResponse = Utils.createJSONObjectIfValid(apiRes);
+	    						if (piwikObjectResponse != null) {
+	    								piwikRes = new JSONObject()
+													.put("method", method)
+													.put("data", piwikObjectResponse);
+	    						}
+	    					} else if (piwikArrayResponse.length() != 0) {
+		    						piwikRes = new JSONObject()
+												.put("method", method)
+												.put("data", piwikArrayResponse);
+	    					}
+	    					
+	    					if (piwikRes != null) {
+		    					// Elastic search connector
 				    			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
 				    			
 				                // Check if exist index
@@ -97,11 +110,11 @@ public class PiwikBatch {
 				    			} else {
 				    				Logger.getLogger(FILE_LOG).info("Piwik Thread: " + SimpaticoResourceUtils.dataInsertedESResponse);
 				    			}
-    						} catch (Exception e) {
-    							Logger.getLogger(FILE_LOG).error("Exception in Piwik Thread: " + e.getMessage());
-    				    		Logger.getRootLogger().error("Exception in Piwik Thread: " + e.getMessage());
-    							Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in Piwik Thread: " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    						}
+	    					}
+    					} catch (Exception e) {
+    						Logger.getLogger(FILE_LOG).error("Exception in Piwik Thread: " + e.getMessage());
+				    		Logger.getRootLogger().error("Exception in Piwik Thread: " + e.getMessage());
+							Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in Piwik Thread: " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
     					}
 					}
 				};
