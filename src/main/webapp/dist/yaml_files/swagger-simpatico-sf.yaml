@@ -1,0 +1,58 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Simpatico Session Feedback API"
+host: "simpatico.hi-iberia.es:4570"
+basePath: "/api/sf"
+schemes:
+- "https"
+produces:
+- "application/json"
+paths:
+  /selectform:
+    get:
+      tags:
+      - "selectform"
+      summary: "Session feedback"
+      description: "Select one form session feedback\n"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "query"
+        description: "User id."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "An id of session feedback modal to use."
+          schema:
+             properties:
+               modal:
+                type: "string"
+                description: "Id of the modal to use."
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /test:
+    get:
+      tags:
+      - "test"
+      summary: "Test API"
+      description: ""
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "A message to check available API."
+          schema:
+            $ref: "#/definitions/Message"
+definitions:
+  Message:
+    type: "object"
+    properties:
+      message:
+        type: "string"

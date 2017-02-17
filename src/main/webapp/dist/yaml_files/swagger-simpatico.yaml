@@ -1,0 +1,204 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Simpatico Logs API"
+host: "simpatico.hi-iberia.es:4570"
+basePath: "/api/logs"
+schemes:
+- "https"
+produces:
+- "application/json"
+paths:
+  /test:
+    get:
+      tags:
+      - "test"
+      summary: "Test API"
+      description: ""
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "A message to check available API."
+          schema:
+            $ref: "#/definitions/Message"
+  /find:
+    get:
+      tags:
+      - "find"
+      summary: "Find documents"
+      description: "Find documents by words.\n"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/inline_response_200"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert:
+    post:
+      tags:
+      - "insert"
+      summary: "Insert one document"
+      description: "Insert one document. If in JSON there are '_id' key, the document will insert with these id.\n"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "query"
+        description: "A valid JSON to insert."
+        required: true
+        schema:
+          type: "object"
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /remove:
+    delete:
+      tags:
+      - "delete"
+      summary: "Delete one document"
+      description: "Delete one document. JSON with 'id' key is required.\n"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "query"
+        description: "A valid JSON with 'id' key."
+        required: true
+        schema:
+          $ref: "#/definitions/Document_Delete"
+      responses:
+        200:
+          description: "A message information that data was deleted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request. JSON invalid."
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /update:
+    put:
+      tags:
+      - "update"
+      summary: "Update one document"
+      description: "Update document's fields. JSON with 'id' and 'content' keys is\
+        \ required. If the field does not exist, it is added (preserving all previous\
+        \ ones). \n"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "query"
+        description: "A valid JSON with 'id' and 'content' keys,"
+        required: true
+        schema:
+          $ref: "#/definitions/Document_Update"
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "If document does not exists, It will be inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request. JSON invalid."
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+definitions:
+  Document:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+      score:
+        type: "number"
+        format: "float"
+        description: "Relevancy in finding."
+      data:
+        type: "string"
+        description: "document data."
+  Document_Update:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+      content:
+        type: "object"
+        description: "Valid json."
+        properties: {}
+  Document_Delete:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+  Message:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  inline_response_200:
+    properties:
+      count:
+        type: "number"
+        format: "int"
+        description: "Unique identifier representing a specific document."
+      results:
+        type: "array"
+        items:
+          $ref: "#/definitions/Document"

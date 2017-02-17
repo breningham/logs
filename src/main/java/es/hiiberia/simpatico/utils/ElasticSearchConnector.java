@@ -40,7 +40,7 @@ public class ElasticSearchConnector {
 	// Public
 	public static String AllFieldsES = "_all";
 		
-	private static int DEFAULT_SIZE_LIMIT_ES = 100000;
+	private static int DEFAULT_SIZE_LIMIT_ES = 10000;
 		
 	// Private constructor
 	private ElasticSearchConnector() throws Exception {
