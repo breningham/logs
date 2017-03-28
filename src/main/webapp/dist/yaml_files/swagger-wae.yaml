@@ -1,0 +1,195 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Simpatico WAE API"
+host: "simpatico.hi-iberia.es:4570"
+basePath: "/simpatico/api/wae"
+schemes:
+- "https"
+produces:
+- "application/json"
+paths:
+  /find:
+    get:
+      tags:
+      - "find"
+      summary: "find"
+      description: "Find workflow adaptation request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert:
+    get:
+      tags:
+      - "insert"
+      summary: "insert"
+      description: "Insert workflow adaptation request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /update:
+    put:
+      tags:
+      - "update"
+      summary: "update"
+      description: "Update workflow adaptation request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /remove:
+    delete:
+      tags:
+      - "remove"
+      summary: "remove"
+      description: "remove data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+definitions:
+  Message:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  paragraph_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      paragraphID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - paragraphID
+  phrase_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      phraseID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - phraseID    
+  word_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      wordID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - wordID     
+  selectedtext_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      selected_text:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - selected_text           
+

@@ -1,0 +1,512 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Simpatico TAE API"
+host: "213.98.52.219:4570"
+basePath: "/api/tae"
+schemes:
+- "https"
+produces:
+- "application/json"
+paths:
+  /service_simplification:
+    get:
+      tags:
+      - "service_simplification"
+      summary: "Service simplification"
+      description: "Once a user access for second time to an e-service, TAE will obtain the words that a user has asked for simplification the first time and will automatically show the synonim of the word\n"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userID"
+        in: "query"
+        description: "User id."
+        required: true
+        type: "string"
+      - name: "e-serviceID"
+        in: "query"
+        description: "e-service id."
+        required: true
+        type: "string"  
+      responses:
+        200:
+          description: "Implementing..."
+          schema:
+             properties:
+               modal:
+                type: "string"
+                description: "words"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"        
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /find_paragraph:
+    get:
+      tags:
+      - "find"
+      summary: "find_paragraph"
+      description: "Find paragraph events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userID"
+        in: "query"
+        description: "user id."
+        required: true
+        type: "string"
+      - name: "e-serviceID"
+        in: "query"
+        description: "e-service id."
+        required: true
+        type: "string"
+      - name: "paragraphID"
+        in: "query"
+        description: "paragraph id."
+        required: true
+        type: "string"  
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /find_phrase:
+    get:
+      tags:
+      - "find"
+      summary: "find_phrase"
+      description: "Find phrase events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userID"
+        in: "query"
+        description: "user id."
+        required: true
+        type: "string"
+      - name: "e-serviceID"
+        in: "query"
+        description: "e-service id."
+        required: true
+        type: "string"
+      - name: "phraseID"
+        in: "query"
+        description: "phrase id."
+        required: true
+        type: "string"  
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /find_word:
+    get:
+      tags:
+      - "find"
+      summary: "find_word"
+      description: "Find word events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userID"
+        in: "query"
+        description: "user id."
+        required: true
+        type: "string"
+      - name: "e-serviceID"
+        in: "query"
+        description: "e-service id."
+        required: true
+        type: "string"
+      - name: "wordID"
+        in: "query"
+        description: "word id."
+        required: true
+        type: "string"  
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"   
+  /find_freetext:
+    get:
+      tags:
+      - "find"
+      summary: "find_freetext"
+      description: "Find free text events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userID"
+        in: "query"
+        description: "user id."
+        required: true
+        type: "string"
+      - name: "e-serviceID"
+        in: "query"
+        description: "e-service id."
+        required: true
+        type: "string"
+      - name: "selected_text"
+        in: "query"
+        description: "selected text."
+        required: true
+        type: "string"  
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert_paragraph:
+    post:
+      tags:
+      - "insert"
+      summary: "insert_paragraph"
+      description: "Insert paragraph events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/paragraph_params'
+      responses:
+        200:
+          description: "Data inserted"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /insert_phrase:
+    post:
+      tags:
+      - "insert"
+      summary: "insert_phrase"
+      description: "Insert phrase events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/phrase_params'
+      responses:
+        200:
+          description: "Data inserted"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /insert_word:
+    post:
+      tags:
+      - "insert"
+      summary: "insert_word"
+      description: "Insert word events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/word_params'
+      responses:
+        200:
+          description: "Data inserted"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"   
+  /insert_freetext:
+    post:
+      tags:
+      - "insert"
+      summary: "insert_freetext"
+      description: "Insert free text events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/selectedtext_params'
+      responses:
+        200:
+          description: "Data inserted"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /update_paragraph:
+    put:
+      tags:
+      - "update"
+      summary: "update_paragraph"
+      description: "Update paragraph events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/paragraph_params'
+      responses:
+        200:
+          description: "Message data updated"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /update_phrase:
+    put:
+      tags:
+      - "update"
+      summary: "update_phrase"
+      description: "Update phrase events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/phrase_params'
+      responses:
+        200:
+          description: "Message data updated"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /update_word:
+    put:
+      tags:
+      - "update"
+      summary: "update_word"
+      description: "Update word events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/word_params'
+      responses:
+        200:
+          description: "Message data updated"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"   
+  /update_freetext:
+    put:
+      tags:
+      - "update"
+      summary: "update_freetext"
+      description: "Update free text events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/selectedtext_params'
+      responses:
+        200:
+          description: "Message data updated"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /remove:
+    delete:
+      tags:
+      - "delete"
+      summary: "delete"
+      description: "delete event"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "query"
+        description: "event id."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Message data removed"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"  
+definitions:
+  Message:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  paragraph_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      paragraphID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - paragraphID
+  phrase_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      phraseID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - phraseID    
+  word_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      wordID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - wordID     
+  selectedtext_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      selected_text:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - selected_text           

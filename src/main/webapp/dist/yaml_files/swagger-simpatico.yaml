@@ -4,7 +4,7 @@ info:
   version: "1.0.0"
   title: "Simpatico Logs API"
 host: "simpatico.hi-iberia.es:4570"
-basePath: "/api/logs"
+basePath: "/simpatico/api/logs"
 schemes:
 - "https"
 produces:

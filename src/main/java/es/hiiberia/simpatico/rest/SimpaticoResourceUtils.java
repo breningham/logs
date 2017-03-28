@@ -92,6 +92,66 @@ public class SimpaticoResourceUtils {
 		return error.toString();
 	}
 	
+public static Response findRequest(HttpServletRequest request, Map<String, List<String>> queryParams, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) {
+		
+		ArrayList<String> literalWords = new ArrayList<>();
+    	int limit = 0; 
+    	String fieldSortName = "";
+    	SortOrder sortOrder = SortOrder.ASC; // Inicialize. If fieldSort is empty dont sort
+    	
+    	try {
+	    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+	    	 	
+	    	// Process query params
+	        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+	            String key = entry.getKey();
+	            List<String> values = entry.getValue();
+	            
+	            // literal words
+	            if (key.contentEquals(SimpaticoResourceUtils.wordsParam)) {
+	            	for (String word : values) {
+	            		// Comma separated and add to array
+	            		for (String splitWord : word.split(SimpaticoResourceUtils.separateParam)) {
+	            			literalWords.add(splitWord);
+	            		}
+	            	}
+	            // Limit	
+	            } else if (key.contentEquals(SimpaticoResourceUtils.limitParam)) {
+	            	if (!values.isEmpty() && Utils.isInteger(values.get(0))) {
+	            		limit = Integer.parseInt(values.get(0));
+	            	}
+	            // Sort
+	            } else if (key.contentEquals(SimpaticoResourceUtils.sortASCParam)) {
+	            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
+	            	sortOrder = SortOrder.ASC;
+	            } else if (key.contentEquals(SimpaticoResourceUtils.sortDESCParam)) {
+	            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
+	            	sortOrder = SortOrder.DESC;
+	            } else {
+	            	// BAD PARAMS
+	            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+	    			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badParamsRequestResponse);
+	            }
+	        }
+	        	        
+	        SearchResponse responseES;
+	        // No params, so empty request -> return full documents stored
+	        if (literalWords.isEmpty()) {
+	        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, fieldSortName, sortOrder, limit);
+	        } else {
+	        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_FIELD_SEARCH, literalWords, fieldSortName, sortOrder, limit);
+	        }
+	        
+	        return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.searchResponse2JSONResponse(responseES));
+    	} catch (Exception e) {
+    		// Print the exception and its trace on log
+    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+    	}
+	}
+
 	public static Response findRequest(HttpServletRequest request, UriInfo uriInfo, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) {
 		
 		ArrayList<String> literalWords = new ArrayList<>();

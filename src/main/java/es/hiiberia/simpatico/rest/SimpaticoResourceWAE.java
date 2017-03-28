@@ -20,28 +20,27 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import es.hiiberia.simpatico.utils.SimpaticoProperties;
 import es.hiiberia.simpatico.utils.Utils;
 
-@Path("/sf")
-public class SimpaticoResourceSF {
+@Path("/wae")
+public class SimpaticoResourceWAE {
 
 	private static String ES_INDEX = SimpaticoProperties.elasticSearchLogsIndex;
-	private static String ES_TYPE =  "SF";
+	private static String ES_TYPE =  "WAE";
 	private static String ES_FIELD_SEARCH = SimpaticoProperties.elasticSearchFieldSearch;
 	private static String FILE_LOG = SimpaticoProperties.simpaticoLog_Logs;
-	private static String THIS_RESOURCE = "SF";
+	private static String THIS_RESOURCE = "WAE";
 	
 	
 	private static String USER_ID = "userID";
 	private static String E_SERVICE_ID = "e-serviceID";
-	private static String COMPLEXITY = "complexity";
+	private static String TIMESTAMP = "timestamp";
 	
 	private static String EVENT = "event";
-	private static String EVENT_SESSION_FEEDBACK = "session_feedback";
+	private static String EVENT_WAE = "workflow_adaptation_request";
 	
 	
     @GET
@@ -60,10 +59,10 @@ public class SimpaticoResourceSF {
 	    	List<String> words = queryParams.get(SimpaticoResourceUtils.wordsParam);
 			if (words == null) {
 				words = new ArrayList<>();
-				words.add(EVENT_SESSION_FEEDBACK);
+				words.add(EVENT_WAE);
 				queryParams.put(SimpaticoResourceUtils.wordsParam, words);
 			} else {
-				words.add(EVENT_SESSION_FEEDBACK);
+				words.add(EVENT_WAE);
 			}
 			
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
@@ -75,7 +74,7 @@ public class SimpaticoResourceSF {
     		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
     	}
     }
-    
+        
     @GET
     @Path("/find_force")
     @Produces(MediaType.APPLICATION_JSON)
@@ -104,7 +103,7 @@ public class SimpaticoResourceSF {
     @Path("/insert")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insert(@Context HttpServletRequest request, String postData) {
-    	/* JSON: {userID: <string>, e-serviceID: <string>, complexity: <string>}   	event: session_feedback
+    	/* JSON: {userID: <string>, e-serviceID: <string>, timestamp: <string>}   	event: workflow_adaptation_request
     	*/
     	
     	boolean badRequest = true;
@@ -113,9 +112,9 @@ public class SimpaticoResourceSF {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(COMPLEXITY)) {
+	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) {
     				badRequest = false;
-    				jsonObject.put(EVENT, EVENT_SESSION_FEEDBACK);
+    				jsonObject.put(EVENT, EVENT_WAE);
 	    		}
 	    	}
 	    	
@@ -179,9 +178,9 @@ public class SimpaticoResourceSF {
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
 	    		if (jsonObject != null) {
-		    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(COMPLEXITY)) {
+		    		if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) { // Length + 1 : field "id"
 	    				badRequest = false;
-	    				jsonObject.put(EVENT, EVENT_SESSION_FEEDBACK);
+	    				jsonObject.put(EVENT, EVENT_WAE);
 		    		}
 		    	}
 	    	}
@@ -241,30 +240,7 @@ public class SimpaticoResourceSF {
     public Response remove(@Context HttpServletRequest request, String postData) {
     	return SimpaticoResourceUtils.removeRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     }
-    
-	
-    @GET
-    @Path("/selectform")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response selectForm(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
-    	
-    	JSONObject formToUse = new JSONObject();
-    	
-    	String modal;
-    	if (Math.random() > 0.5) {
-    		modal = "a";
-    	} else {
-    		modal = "b";
-    	}
-    	
-    	try {
-			formToUse.put("modal", modal);
-		} catch (JSONException e) {
-			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-		}
-    	
-    	return SimpaticoResourceUtils.createMessageResponse(formToUse);
-    }
+  
     
     /** Test Method **/
     @GET

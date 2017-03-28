@@ -1,0 +1,519 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Simpatico IFE API"
+host: "simpatico.hi-iberia.es:4570"
+basePath: "/simpatico/api/ife"
+schemes:
+- "https"
+produces:
+- "application/json"
+paths:
+  /find_sessionstart:
+    get:
+      tags:
+      - "find_sessionstart"
+      summary: "find_sessionstart"
+      description: "Find session start events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /find_sessionend:
+    get:
+      tags:
+      - "find_sessionend"
+      summary: "find_sessionend"
+      description: "Find session end events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /find_formstart:
+    get:
+      tags:
+      - "find_formstart"
+      summary: "find_formstart"
+      description: "Find form start"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /find_formend:
+    get:
+      tags:
+      - "find_formend"
+      summary: "find_formend"
+      description: "Find form end"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /find_clicks:
+    get:
+      tags:
+      - "find_clicks"
+      summary: "find_clicks"
+      description: "Find clicks events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Data matching"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert_sessionstart:
+    post:
+      tags:
+      - "insert_sessionstart"
+      summary: "insert_sessionstart"
+      description: "insert session start events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok message"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert_sessionend:
+    post:
+      tags:
+      - "insert_sessionend"
+      summary: "insert_sessionend"
+      description: "Insert session end events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok message"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /insert_formstart:
+    post:
+      tags:
+      - "insert_formstart"
+      summary: "insert_formstart"
+      description: "Insert form start"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok message"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /insert_formend:
+    post:
+      tags:
+      - "insert_formend"
+      summary: "insert_formend"
+      description: "Insert form end"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok message"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /insert_clicks:
+    get:
+      tags:
+      - "insert_clicks"
+      summary: "insert_clicks"
+      description: "Insert clicks events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /update_sessionstart:
+    put:
+      tags:
+      - "update_sessionstart"
+      summary: "update_sessionstart"
+      description: "update session start events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok message"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /update_sessionend:
+    put:
+      tags:
+      - "update_sessionend"
+      summary: "update_sessionend"
+      description: "Update session end events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok message"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /update_formstart:
+    put:
+      tags:
+      - "update_formstart"
+      summary: "update_formstart"
+      description: "Update form start"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok message"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /update_formend:
+    put:
+      tags:
+      - "update_formend"
+      summary: "update_formend"
+      description: "Update form end"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok message"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /update_clicks:
+    put:
+      tags:
+      - "update_clicks"
+      summary: "update_clicks"
+      description: "Update clicks events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /remove:
+    delete:
+      tags:
+      - "remove"
+      summary: "remove"
+      description: "remove data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "user id."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+definitions:
+  Message:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  paragraph_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      paragraphID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - paragraphID
+  phrase_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      phraseID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - phraseID    
+  word_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      wordID:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - wordID     
+  selectedtext_params:
+    type: "object"
+    description: Task object
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      selected_text:
+        type: string
+        description: paragraph id
+    required:
+      - userID
+      - e-serviceID
+      - selected_text           
+
