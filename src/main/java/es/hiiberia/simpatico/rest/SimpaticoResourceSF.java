@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -20,9 +21,9 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import es.hiiberia.simpatico.utils.Forms;
 import es.hiiberia.simpatico.utils.SimpaticoProperties;
 import es.hiiberia.simpatico.utils.Utils;
 
@@ -244,26 +245,17 @@ public class SimpaticoResourceSF {
     
 	
     @GET
-    @Path("/selectform")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response selectForm(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
+    @Path("/selectdialog")
+    @Produces(MediaType.TEXT_HTML)
+    public String selectDialog(@QueryParam("id") String userId, @QueryParam("ctz") Boolean ctz, @QueryParam("simpl") Boolean simpl, @QueryParam("timeout") Boolean timeout) {
+    	String result = Forms.DIALOG_START;
     	
-    	JSONObject formToUse = new JSONObject();
+    	if (ctz) result += Forms.DIALOG_CTZPEDIA;
+    	if (simpl) result += Forms.DIALOG_SIMPLIFICATION;
+    	if (timeout) result += Forms.DIALOG_TIMEOUT;
     	
-    	String modal;
-    	if (Math.random() > 0.5) {
-    		modal = "a";
-    	} else {
-    		modal = "b";
-    	}
-    	
-    	try {
-			formToUse.put("modal", modal);
-		} catch (JSONException e) {
-			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-		}
-    	
-    	return SimpaticoResourceUtils.createMessageResponse(formToUse);
+    	result += Forms.DIALOG_COMMON;
+    	return result;
     }
     
     /** Test Method **/
