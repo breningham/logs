@@ -1,0 +1,664 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Simpatico CTZP API"
+host: "simpatico.hi-iberia.es:4570"
+basePath: "/simpatico/api/ctzp"
+schemes:
+- "https"
+produces:
+- "application/json"
+paths:
+  /find/contentrequest:
+    get:
+      tags:
+      - "find"
+      description: "The user select an anotable element (form, block, field, paragraph, frase, word) in order to find questions related to that element or to formulate a new question."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /find/questionrequest:
+    get:
+      tags:
+      - "find"
+      description: "The user select a question related to an anotable element (form, block, field, paragraph, frase, word) "
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /find/newquestion:
+    get:
+      tags:
+      - "find"
+      description: "The user formulate a new question related to an anotable element (form, block, field, paragraph, frase, word) "
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /find/newanswer:
+    get:
+      tags:
+      - "find"
+      description: "The user insert a new answer for a question related to an anotable element (form, block, field, paragraph, frase, word) "
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /find/termrequest:
+    get:
+      tags:
+      - "find"
+      description: "The user select a term of an annotable element in order to obtain the definition of the term from an external resource ()"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert/contentrequest:
+    post:
+      tags:
+      - "insert"
+      description: "Insert content request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/uea_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert/questionrequest:
+    post:
+      tags:
+      - "insert"
+      description: "Insert question request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ueaq_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /insert/newquestion:
+    post:
+      tags:
+      - "insert"
+      description: "Insert new question"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/uea_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /insert/newanswer:
+    post:
+      tags:
+      - "insert"
+      description: "Insert new answer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ueaq_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /insert/termrequest:
+    post:
+      tags:
+      - "insert"
+      description: "Insert term request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ueas_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /update/contentrequest:
+    put:
+      tags:
+      - "update"
+      description: "Update content request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /update/questionrequest:
+    put:
+      tags:
+      - "update"
+      description: "Update question request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /update/newquestion:
+    put:
+      tags:
+      - "update"
+      description: "Update new question"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /update/newanswer:
+    put:
+      tags:
+      - "update"
+      description: "Update new answer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /update/termrequest:
+    put:
+      tags:
+      - "update"
+      description: "Update term request"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /remove:
+    delete:
+      tags:
+      - "remove"
+      summary: "remove"
+      description: "remove data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Delete'
+      responses:
+        200:
+          description: "Message data removed"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /test:
+    get:
+      tags:
+      - "test"
+      summary: "Test API"
+      description: ""
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "A message to check available API."
+          schema:
+            $ref: "#/definitions/Message"                    
+definitions:
+  Document:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+      score:
+        type: "number"
+        format: "float"
+        description: "Relevancy in finding."
+      data:
+        type: "string"
+        description: "document data."
+  Document_Update:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+      content:
+        type: "object"
+        description: "Valid json like used in insert method."
+        properties: {}
+  Document_Delete:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+  Response_200:
+    properties:
+      count:
+        type: "number"
+        format: "int"
+        description: "Unique identifier representing a specific document."
+      results:
+        type: "array"
+        items:
+          $ref: "#/definitions/Document"   
+  Message:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  uea_params:
+    type: "object"
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: e-service id
+      annotableElementID:
+        type: string
+        description: annotable element id
+    required:
+      - userID
+      - e-serviceID
+      - annotableElementID
+  ueaq_params:
+    type: "object"
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      annotableElementID:
+        type: string
+        description: annotable element id
+      questionID:
+        type: string
+        description: question id
+    required:
+      - userID
+      - e-serviceID
+      - annotableElementID
+      - questionID
+  ueas_params:
+    type: "object"
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      annotableElementID:
+        type: string
+        description: annotable element id
+      selected_term:
+        type: string
+        description: selected term
+    required:    
+      - userID
+      - e-serviceID
+      - annotableElementID
+      - selected_term    

@@ -5,9 +5,9 @@ Logs is a module for store/search/update multiple data from another modules.
 ## Installation Requirements
 - Java 1.8+
 - J2EE Servlet Container (Tomcat 7+)
-- Elastic Search (5.0+)
+- Elastic Search (5.0+)  				https://www.elastic.co/downloads/elasticsearch
 - Java IDE (eclipse)
-- Piwik 
+- Piwik 								https://piwik.org/docs/installation/
 
 ## Configuration Elastic Search
 
@@ -21,6 +21,7 @@ Logs is a module for store/search/update multiple data from another modules.
 
 ## Installation
 
-  1. Import java project into IDE and export like war file
-  2. Deploy war file into Tomcat webapps folder
-  3. Run elastic search  
+  1. Export java project like war file
+  2. Run elastic search  
+  3. Deploy war file into Tomcat webapps folder
+  

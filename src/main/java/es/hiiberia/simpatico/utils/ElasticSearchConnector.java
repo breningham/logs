@@ -169,32 +169,32 @@ public class ElasticSearchConnector {
 	
 	// TODO check null when no expect null parameters
 	public SearchResponse search(String index) throws IOException {
-		return searchES (index, null, null, null, 0);
+		return searchES (index, null, null, null, null, 0);
 	}
 
 	public SearchResponse search(String index, String fieldSort, SortOrder ord) throws IOException {
-		return searchES (index, null, fieldSort, ord, 0);
+		return searchES (index, null, null, fieldSort, ord, 0);
 	}
 	
-	public SearchResponse search(String index, String fieldSort, SortOrder ord, int limit) throws IOException {
-		return searchES (index, null, fieldSort, ord, limit);
+	public SearchResponse search(String index, String type, String fieldSort, SortOrder ord, int limit) throws IOException {
+		return searchES (index, type, null, fieldSort, ord, limit);
 	}
 
 	public SearchResponse search(String index, int limit) throws IOException {
-		return searchES (index, null, null, null, limit);		
+		return searchES (index, null, null, null, null, limit);		
 	}
 	
-	public SearchResponse search(String index, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {
+	public SearchResponse search(String index, String type, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {
 		
 		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
 		for (String word : words) {
 			boolQuery.should(QueryBuilders.matchQuery(field, word));
 		}
 		
-		return searchES (index, boolQuery, fieldSort, ord, limit);
+		return searchES (index, type, boolQuery, fieldSort, ord, limit);
 	}
 	
-	private SearchResponse searchES (String index, QueryBuilder qb, String fieldSort, SortOrder ord, int limit) throws IOException {
+	private SearchResponse searchES (String index, String type, QueryBuilder qb, String fieldSort, SortOrder ord, int limit) throws IOException {
 		
 		try {
 			Logger.getRootLogger().info("Elastic search: Searching all data (index: " + index + ")");		
@@ -206,6 +206,11 @@ public class ElasticSearchConnector {
 				searchRequest.setQuery(qb);
 			} else {
 				searchRequest.setQuery(QueryBuilders.matchAllQuery());
+			}
+			
+			// Add type search
+			if (type != null) {
+				searchRequest.setTypes(type);
 			}
 
 			// Add field sort

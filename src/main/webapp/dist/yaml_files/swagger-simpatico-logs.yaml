@@ -10,20 +10,6 @@ schemes:
 produces:
 - "application/json"
 paths:
-  /test:
-    get:
-      tags:
-      - "test"
-      summary: "Test API"
-      description: ""
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "A message to check available API."
-          schema:
-            $ref: "#/definitions/Message"
   /find:
     get:
       tags:
@@ -155,6 +141,19 @@ paths:
           description: "Bad request. JSON invalid."
         500:
           description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /test:
+    get:
+      tags:
+      - "test"
+      description: ""
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "A message to check available API."
           schema:
             $ref: "#/definitions/Message"
 definitions:

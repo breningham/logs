@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="x-ua-compatible" content="IE=edge">
-  <title>Swagger LOGS UI</title>
+  <title>Swagger WAE UI</title>
   <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32" />
   <link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16" />
   <link href='css/typography.css' media='screen' rel='stylesheet' type='text/css'/>
@@ -40,7 +40,7 @@
         url = decodeURIComponent(url[1]);
       } else {
         url = window.location.pathname;
-        url = url.substring(0, url.lastIndexOf('/')+1) + "yaml_files/swagger-simpatico-logs.yaml";
+        url = url.substring(0, url.lastIndexOf('/')+1) + "yaml_files/swagger-simpatico-wae.yaml";
       }
 
       hljs.configure({

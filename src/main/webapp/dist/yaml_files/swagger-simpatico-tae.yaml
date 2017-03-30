@@ -3,35 +3,23 @@ swagger: "2.0"
 info:
   version: "1.0.0"
   title: "Simpatico TAE API"
-host: "213.98.52.219:4570"
-basePath: "/api/tae"
+host: "simpatico.hi-iberia.es:4570"
+basePath: "/simpatico/api/tae"
 schemes:
 - "https"
 produces:
 - "application/json"
 paths:
-  /service_simplification:
+  /servicesimplification:
     get:
       tags:
       - "service_simplification"
-      summary: "Service simplification"
       description: "Once a user access for second time to an e-service, TAE will obtain the words that a user has asked for simplification the first time and will automatically show the synonim of the word\n"
       produces:
       - "application/json"
-      parameters:
-      - name: "userID"
-        in: "query"
-        description: "User id."
-        required: true
-        type: "string"
-      - name: "e-serviceID"
-        in: "query"
-        description: "e-service id."
-        required: true
-        type: "string"  
       responses:
         200:
-          description: "Implementing..."
+          description: ""
           schema:
              properties:
                modal:
@@ -45,35 +33,40 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"
-  /find_paragraph:
+  /find/paragraph:
     get:
       tags:
       - "find"
-      summary: "find_paragraph"
       description: "Find paragraph events"
       produces:
       - "application/json"
       parameters:
-      - name: "userID"
+      - name: "words"
         in: "query"
-        description: "user id."
-        required: true
+        description: "Comma separated words. Espaces are allowed."
+        required: false
         type: "string"
-      - name: "e-serviceID"
+      - name: "sortasc"
         in: "query"
-        description: "e-service id."
-        required: true
+        description: "Created time ascending sort."
+        required: false
         type: "string"
-      - name: "paragraphID"
+      - name: "sortdesc"
         in: "query"
-        description: "paragraph id."
-        required: true
-        type: "string"  
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
       responses:
         200:
-          description: "Data matching"
+          description: "An array of documents and how many are."
           schema:
-            $ref: "#/definitions/Message"
+            $ref: "#/definitions/Response_200"
         400:
           description: "Bad request."
           schema:
@@ -82,35 +75,40 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"    
-  /find_phrase:
+  /find/phrase:
     get:
       tags:
       - "find"
-      summary: "find_phrase"
       description: "Find phrase events"
       produces:
       - "application/json"
       parameters:
-      - name: "userID"
+      - name: "words"
         in: "query"
-        description: "user id."
-        required: true
+        description: "Comma separated words. Espaces are allowed."
+        required: false
         type: "string"
-      - name: "e-serviceID"
+      - name: "sortasc"
         in: "query"
-        description: "e-service id."
-        required: true
+        description: "Created time ascending sort."
+        required: false
         type: "string"
-      - name: "phraseID"
+      - name: "sortdesc"
         in: "query"
-        description: "phrase id."
-        required: true
-        type: "string"  
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
       responses:
         200:
-          description: "Data matching"
+          description: "An array of documents and how many are."
           schema:
-            $ref: "#/definitions/Message"
+            $ref: "#/definitions/Response_200"
         400:
           description: "Bad request."
           schema:
@@ -119,35 +117,40 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"       
-  /find_word:
+  /find/word:
     get:
       tags:
       - "find"
-      summary: "find_word"
       description: "Find word events"
       produces:
       - "application/json"
       parameters:
-      - name: "userID"
+      - name: "words"
         in: "query"
-        description: "user id."
-        required: true
+        description: "Comma separated words. Espaces are allowed."
+        required: false
         type: "string"
-      - name: "e-serviceID"
+      - name: "sortasc"
         in: "query"
-        description: "e-service id."
-        required: true
+        description: "Created time ascending sort."
+        required: false
         type: "string"
-      - name: "wordID"
+      - name: "sortdesc"
         in: "query"
-        description: "word id."
-        required: true
-        type: "string"  
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
       responses:
         200:
-          description: "Data matching"
+          description: "An array of documents and how many are."
           schema:
-            $ref: "#/definitions/Message"
+            $ref: "#/definitions/Response_200"
         400:
           description: "Bad request."
           schema:
@@ -156,35 +159,40 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"   
-  /find_freetext:
+  /find/freetext:
     get:
       tags:
       - "find"
-      summary: "find_freetext"
       description: "Find free text events"
       produces:
       - "application/json"
       parameters:
-      - name: "userID"
+      - name: "words"
         in: "query"
-        description: "user id."
-        required: true
+        description: "Comma separated words. Espaces are allowed."
+        required: false
         type: "string"
-      - name: "e-serviceID"
+      - name: "sortasc"
         in: "query"
-        description: "e-service id."
-        required: true
+        description: "Created time ascending sort."
+        required: false
         type: "string"
-      - name: "selected_text"
+      - name: "sortdesc"
         in: "query"
-        description: "selected text."
-        required: true
-        type: "string"  
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
       responses:
         200:
-          description: "Data matching"
+          description: "An array of documents and how many are."
           schema:
-            $ref: "#/definitions/Message"
+            $ref: "#/definitions/Response_200"
         400:
           description: "Bad request."
           schema:
@@ -193,12 +201,11 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"
-  /insert_paragraph:
+  /insert/paragraph:
     post:
       tags:
       - "insert"
-      summary: "insert_paragraph"
-      description: "Insert paragraph events"
+      description: "This event happens when user ask for the simplification of a paragraph. In LOG we will store for a given e-service how many paragrphs ask for simplification, and for a given e-service and a paragrph how many times users ask for simplification (if many users ask for simplification for the same paragrph then P.A must considere to change it in the appropiate way)"
       produces:
       - "application/json"
       parameters:
@@ -209,7 +216,11 @@ paths:
           $ref: '#/definitions/paragraph_params'
       responses:
         200:
-          description: "Data inserted"
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
           schema:
             $ref: "#/definitions/Message"
         400:
@@ -220,12 +231,11 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"    
-  /insert_phrase:
+  /insert/phrase:
     post:
       tags:
       - "insert"
-      summary: "insert_phrase"
-      description: "Insert phrase events"
+      description: "This event happens when user ask for the simplification of a paragraph. In LOG we will store for a given e-service how many paragrphs ask for simplification, and for a given e-service and a paragrph how many times users ask for simplification (if many users ask for simplification for the same paragrph then P.A must considere to change it in the appropiate way)"
       produces:
       - "application/json"
       parameters:
@@ -236,7 +246,11 @@ paths:
           $ref: '#/definitions/phrase_params'
       responses:
         200:
-          description: "Data inserted"
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
           schema:
             $ref: "#/definitions/Message"
         400:
@@ -247,12 +261,11 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"       
-  /insert_word:
+  /insert/word:
     post:
       tags:
       - "insert"
-      summary: "insert_word"
-      description: "Insert word events"
+      description: "This event happens when user ask for the simplification of a paragraph. In LOG we will store for a given e-service how many paragrphs ask for simplification, and for a given e-service and a paragrph how many times users ask for simplification (if many users ask for simplification for the same paragrph then P.A must considere to change it in the appropiate way)"
       produces:
       - "application/json"
       parameters:
@@ -263,7 +276,11 @@ paths:
           $ref: '#/definitions/word_params'
       responses:
         200:
-          description: "Data inserted"
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
           schema:
             $ref: "#/definitions/Message"
         400:
@@ -274,11 +291,10 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"   
-  /insert_freetext:
+  /insert/freetext:
     post:
       tags:
       - "insert"
-      summary: "insert_freetext"
       description: "Insert free text events"
       produces:
       - "application/json"
@@ -290,7 +306,11 @@ paths:
           $ref: '#/definitions/selectedtext_params'
       responses:
         200:
-          description: "Data inserted"
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
           schema:
             $ref: "#/definitions/Message"
         400:
@@ -301,11 +321,10 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"
-  /update_paragraph:
+  /update/paragraph:
     put:
       tags:
       - "update"
-      summary: "update_paragraph"
       description: "Update paragraph events"
       produces:
       - "application/json"
@@ -314,10 +333,14 @@ paths:
         in: body
         required: true
         schema:
-          $ref: '#/definitions/paragraph_params'
+          $ref: '#/definitions/Document_Update'
       responses:
         200:
-          description: "Message data updated"
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
           schema:
             $ref: "#/definitions/Message"
         400:
@@ -328,11 +351,10 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"    
-  /update_phrase:
+  /update/phrase:
     put:
       tags:
       - "update"
-      summary: "update_phrase"
       description: "Update phrase events"
       produces:
       - "application/json"
@@ -341,10 +363,14 @@ paths:
         in: body
         required: true
         schema:
-          $ref: '#/definitions/phrase_params'
+          $ref: '#/definitions/Document_Update'
       responses:
         200:
-          description: "Message data updated"
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
           schema:
             $ref: "#/definitions/Message"
         400:
@@ -355,11 +381,10 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"       
-  /update_word:
+  /update/word:
     put:
       tags:
       - "update"
-      summary: "update_word"
       description: "Update word events"
       produces:
       - "application/json"
@@ -368,10 +393,14 @@ paths:
         in: body
         required: true
         schema:
-          $ref: '#/definitions/word_params'
+          $ref: '#/definitions/Document_Update'
       responses:
         200:
-          description: "Message data updated"
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
           schema:
             $ref: "#/definitions/Message"
         400:
@@ -382,11 +411,10 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"   
-  /update_freetext:
+  /update/freetext:
     put:
       tags:
       - "update"
-      summary: "update_freetext"
       description: "Update free text events"
       produces:
       - "application/json"
@@ -395,10 +423,14 @@ paths:
         in: body
         required: true
         schema:
-          $ref: '#/definitions/selectedtext_params'
+          $ref: '#/definitions/Document_Update'
       responses:
         200:
-          description: "Message data updated"
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
           schema:
             $ref: "#/definitions/Message"
         400:
@@ -418,11 +450,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "id"
-        in: "query"
-        description: "event id."
+      - name: params 
+        in: body
         required: true
-        type: "string"
+        schema:
+          $ref: '#/definitions/Document_Delete'
       responses:
         200:
           description: "Message data removed"
@@ -436,7 +468,59 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"  
+  /test:
+    get:
+      tags:
+      - "test"
+      description: ""
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "A message to check available API."
+          schema:
+            $ref: "#/definitions/Message"
 definitions:
+  Document:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+      score:
+        type: "number"
+        format: "float"
+        description: "Relevancy in finding."
+      data:
+        type: "string"
+        description: "document data."
+  Document_Update:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+      content:
+        type: "object"
+        description: "Valid json like used in insert method."
+        properties: {}
+  Document_Delete:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+  Response_200:
+    properties:
+      count:
+        type: "number"
+        format: "int"
+        description: "Unique identifier representing a specific document."
+      results:
+        type: "array"
+        items:
+          $ref: "#/definitions/Document"   
   Message:
     type: "object"
     properties:

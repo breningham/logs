@@ -20,12 +20,9 @@ public class SimpaticoProperties {
 	public static String elasticSearchClusterName;
 	
 	// Logs
-	public static String elasticSearchLogsIndex;
-	public static String elasticSearchLogsType;
+	public static String elasticSearchHIIndex;
+	public static String elasticSearchSharedIndex;
 	public static String elasticSearchCreatedFieldName;
-	// Analytics
-	public static String elasticSearchAnalyticsIndex;
-	public static String elasticSearchAnalyticsType;
 	// Search
 	public static String elasticSearchFieldSearch;
 	// Piwik
@@ -46,10 +43,8 @@ public class SimpaticoProperties {
 			elasticSearchPort = Integer.parseInt(RESOURCE_BUNDLE.getString("elasticsearch.port"));
 			elasticSearchClusterName = RESOURCE_BUNDLE.getString("elasticsearch.clustername");
 			
-			elasticSearchLogsIndex = RESOURCE_BUNDLE.getString("elasticsearch.logs.index");
-			elasticSearchLogsType = RESOURCE_BUNDLE.getString("elasticsearch.logs.type");
-			elasticSearchAnalyticsIndex = RESOURCE_BUNDLE.getString("elasticsearch.analytics.index");
-			elasticSearchAnalyticsType = RESOURCE_BUNDLE.getString("elasticsearch.analytics.type");
+			elasticSearchHIIndex = RESOURCE_BUNDLE.getString("elasticsearch.hi.index");
+			elasticSearchSharedIndex = RESOURCE_BUNDLE.getString("elasticsearch.shared.index");
 			
 			elasticSearchCreatedFieldName = RESOURCE_BUNDLE.getString("elasticsearch.created.field.name");
 			elasticSearchFieldSearch = RESOURCE_BUNDLE.getString("elasticsearch.search.field");
