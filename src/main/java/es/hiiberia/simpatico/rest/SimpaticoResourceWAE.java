@@ -90,7 +90,7 @@ public class SimpaticoResourceWAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) {
     				badRequest = false;
     				jsonObject.put(EVENT, EVENT_WAE);
 	    		}
@@ -129,7 +129,7 @@ public class SimpaticoResourceWAE {
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
 	    		if (jsonObject != null) {
-		    		if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) { // Length + 1 : field "id"
+		    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) { // Length + 1 : field "id"
 	    				badRequest = false;
 	    				jsonObject.put(EVENT, EVENT_WAE);
 		    		}

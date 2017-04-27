@@ -221,7 +221,7 @@ public class SimpaticoResourceIFE {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 			if (jsonObject != null) {
-				if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) {
+				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) {
 					badRequest = false;
 					jsonObject.put(EVENT, EVENT_SESSION_START);
 				}
@@ -254,7 +254,7 @@ public class SimpaticoResourceIFE {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 			if (jsonObject != null) {
-				if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP) 
+				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP) 
 						&& jsonObject.has(SESSION_DURATION) && jsonObject.has(AVERAGE_TIME)) {
 					badRequest = false;
 					jsonObject.put(EVENT, EVENT_SESSION_END);
@@ -288,7 +288,7 @@ public class SimpaticoResourceIFE {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 			if (jsonObject != null) {
-				if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
+				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
 						&& jsonObject.has(TIMESTAMP)) {
 					badRequest = false;
 					jsonObject.put(EVENT, EVENT_FORM_START);
@@ -321,7 +321,7 @@ public class SimpaticoResourceIFE {
 		try {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
-			if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
+			if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
     				&& jsonObject.has(TIMESTAMP)) {
     			badRequest = false;
     			jsonObject.put(EVENT, EVENT_FORM_END);
@@ -355,7 +355,7 @@ public class SimpaticoResourceIFE {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 			if (jsonObject != null) {
-				if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(ANNOTABLE_ELEMENT_ID)
+				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(ANNOTABLE_ELEMENT_ID)
 						&& jsonObject.has(CLICKS)) {
 					badRequest = false;
 					jsonObject.put(EVENT, EVENT_ELEMENT_CLICKS);
@@ -411,7 +411,7 @@ public class SimpaticoResourceIFE {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 			if (jsonObject != null) {
-				if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) { // 4 = id attr + others
+				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) { // 4 = id attr + others
 					badRequest = false;
 					jsonObject.put(EVENT, EVENT_SESSION_START);
 				}
@@ -444,7 +444,7 @@ public class SimpaticoResourceIFE {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 			if (jsonObject != null) {
-				if (jsonObject.length() == 6 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)  
+				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)  
 						&& jsonObject.has(SESSION_DURATION) && jsonObject.has(AVERAGE_TIME)) { // 5 = id attr + others
 					badRequest = false;
 					jsonObject.put(EVENT, EVENT_SESSION_END);
@@ -478,7 +478,7 @@ public class SimpaticoResourceIFE {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 			if (jsonObject != null) {
-				if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
+				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
 						&& jsonObject.has(TIMESTAMP)) {
 					badRequest = false;
 					jsonObject.put(EVENT, EVENT_FORM_START);
@@ -511,7 +511,7 @@ public class SimpaticoResourceIFE {
 		try {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
-			if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
+			if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
     				&& jsonObject.has(TIMESTAMP)) {
     			badRequest = false;
     			jsonObject.put(EVENT, EVENT_FORM_END);
@@ -545,7 +545,7 @@ public class SimpaticoResourceIFE {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 			if (jsonObject != null) {
-				if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(ANNOTABLE_ELEMENT_ID)
+				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(ANNOTABLE_ELEMENT_ID)
 						&& jsonObject.has(CLICKS)) {
 					badRequest = false;
 					jsonObject.put(EVENT, EVENT_ELEMENT_CLICKS);

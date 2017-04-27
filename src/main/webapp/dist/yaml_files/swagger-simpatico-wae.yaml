@@ -53,7 +53,7 @@ paths:
           schema:
             $ref: "#/definitions/Message"
   /insert:
-    get:
+    post:
       tags:
       - "insert"
       description: "Insert data"

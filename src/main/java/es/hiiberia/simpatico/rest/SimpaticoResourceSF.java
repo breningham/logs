@@ -92,7 +92,7 @@ public class SimpaticoResourceSF {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(COMPLEXITY)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(COMPLEXITY)) {
     				badRequest = false;
     				jsonObject.put(EVENT, EVENT_SESSION_FEEDBACK);
 	    		}
@@ -131,7 +131,7 @@ public class SimpaticoResourceSF {
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
 	    		if (jsonObject != null) {
-		    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(COMPLEXITY)) {
+		    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(COMPLEXITY)) {
 	    				badRequest = false;
 	    				jsonObject.put(EVENT, EVENT_SESSION_FEEDBACK);
 		    		}
