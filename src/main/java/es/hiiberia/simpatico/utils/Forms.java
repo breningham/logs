@@ -45,7 +45,7 @@ public class Forms {
 			      "¿Fue la simplificación de párrafo que pidió útil para comprender mejor el servicio?"+
 			    "</div>"+
 			    "<form>"+
-			      "<input id=\"slider_session_feedback\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback.value\"/>"+
+			      "<input id=\"slider_session_feedback_paragraph\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback.value\"/>"+
 			      "<div class=\"slider-horizontal-text-below-left\">Nada útil</div>"+
 			      "<div class=\"slider-horizontal-text-below-right\">Muy útil</div>"+
 			      "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
@@ -57,7 +57,7 @@ public class Forms {
 			      "¿Fue la simplificación de frase que pidió útil para comprender mejor el servicio?"+
 			    "</div>"+
 			    "<form>"+
-			      "<input id=\"slider_session_feedback\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback.value\"/>"+
+			      "<input id=\"slider_session_feedback_phrase\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback.value\"/>"+
 			      "<div class=\"slider-horizontal-text-below-left\">Nada útil</div>"+
 			      "<div class=\"slider-horizontal-text-below-right\">Muy útil</div>"+
 			      "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
@@ -69,7 +69,7 @@ public class Forms {
 			      "¿Fue la simplificación de palabra que pidió útil para comprender mejor el servicio?"+
 			    "</div>"+
 			    "<form>"+
-			      "<input id=\"slider_session_feedback\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback.value\"/>"+
+			      "<input id=\"slider_session_feedback_word\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback.value\"/>"+
 			      "<div class=\"slider-horizontal-text-below-left\">Nada útil</div>"+
 			      "<div class=\"slider-horizontal-text-below-right\">Muy útil</div>"+
 			      "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
@@ -82,7 +82,7 @@ public class Forms {
 			    "¿Fue útil su consulta a la Citizenpedia?"+
 			  "</div>"+
 			  "<form>"+
-			    "<input id=\"slider_session_feedback\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback.value\"/>"+
+			    "<input id=\"slider_session_feedback_ctz\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback.value\"/>"+
 			    "<div class=\"slider-horizontal-text-below-left\">Nada útil</div>"+
 			    "<div class=\"slider-horizontal-text-below-right\">Muy útil</div>"+
 			    "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
