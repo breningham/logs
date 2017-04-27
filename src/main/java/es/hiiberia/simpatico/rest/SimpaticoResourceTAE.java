@@ -202,7 +202,7 @@ public class SimpaticoResourceTAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(PARAGRAPH_ID)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(PARAGRAPH_ID)) {
 	    			badRequest = false;
     				jsonObject.put(EVENT, EVENT_PARAGRAPH_SIMPLIFICATION);
 	    		}
@@ -237,7 +237,7 @@ public class SimpaticoResourceTAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(PHRASE_ID)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(PHRASE_ID)) {
 	    			badRequest = false;
     				jsonObject.put(EVENT, EVENT_PHRASE_SIMPLIFICATION);
 	    		}
@@ -272,7 +272,7 @@ public class SimpaticoResourceTAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(WORD_ID)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(WORD_ID)) {
 	    			badRequest = false;
     				jsonObject.put(EVENT, EVENT_WORD_SIMPLIFICATION);
 	    		}
@@ -307,7 +307,7 @@ public class SimpaticoResourceTAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(SELECTED_TEXT)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(SELECTED_TEXT)) {
 	    			badRequest = false;
     				jsonObject.put(EVENT, EVENT_FREETEXT_SIMPLIFICATION);
 	    		}
@@ -363,7 +363,7 @@ public class SimpaticoResourceTAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(PARAGRAPH_ID)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(PARAGRAPH_ID)) {
 	    			badRequest = false;
     				jsonObject.put(EVENT, EVENT_PARAGRAPH_SIMPLIFICATION);
 	    		}
@@ -398,7 +398,7 @@ public class SimpaticoResourceTAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(PHRASE_ID)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(PHRASE_ID)) {
 	    			badRequest = false;
     				jsonObject.put(EVENT, EVENT_PHRASE_SIMPLIFICATION);
 	    		}
@@ -433,7 +433,7 @@ public class SimpaticoResourceTAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(WORD_ID)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(WORD_ID)) {
 	    			badRequest = false;
     				jsonObject.put(EVENT, EVENT_WORD_SIMPLIFICATION);
 	    		}
@@ -468,7 +468,7 @@ public class SimpaticoResourceTAE {
 	    	// Check parameters and generate event attribute
 	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(SELECTED_TEXT)) {
+	    		if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(SELECTED_TEXT)) {
 	    			badRequest = false;
     				jsonObject.put(EVENT, EVENT_FREETEXT_SIMPLIFICATION);
 	    		}
