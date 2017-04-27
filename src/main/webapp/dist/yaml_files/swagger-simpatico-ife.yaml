@@ -1,0 +1,689 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Simpatico IFE API"
+host: "simpatico.hi-iberia.es:4570"
+basePath: "/simpatico/api/ife"
+schemes:
+- "https"
+produces:
+- "application/json" 
+paths:
+  /find/sessionstart:
+    get:
+      tags:
+      - "find"
+      description: "Find session start events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /find/sessionend:
+    get:
+      tags:
+      - "find"
+      description: "Find session end events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /find/formstart:
+    get:
+      tags:
+      - "find"
+      description: "Find form start"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /find/formend:
+    get:
+      tags:
+      - "find"
+      description: "Find form end"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /find/clicks:
+    get:
+      tags:
+      - "find"
+      description: "Find clicks events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "words"
+        in: "query"
+        description: "Comma separated words. Espaces are allowed."
+        required: false
+        type: "string"
+      - name: "sortasc"
+        in: "query"
+        description: "Created time ascending sort."
+        required: false
+        type: "string"
+      - name: "sortdesc"
+        in: "query"
+        description: "Created time descending sort."
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limit the number of results."
+        required: false
+        type: "number"
+        format: "integer"
+      responses:
+        200:
+          description: "An array of documents and how many are."
+          schema:
+            $ref: "#/definitions/Response_200"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert/sessionstart:
+    post:
+      tags:
+      - "insert"
+      description: "Once a user start a session the timestamp is stored"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/uet_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /insert/sessionend:
+    post:
+      tags:
+      - "insert"
+      description: "Once a user end a session the timestamp is stored. The average time of the use of this e-service is calculated"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/uetsa_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /insert/formstart:
+    post:
+      tags:
+      - "insert"
+      description: "this event will store the timestamp of the beginning of the compilation of a form"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ueft_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /insert/formend:
+    post:
+      tags:
+      - "insert"
+      description: "this event will store the timestamp when a user end the compilation of a form. Average statistics are calculated"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ueft_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /insert/clicks:
+    post:
+      tags:
+      - "insert"
+      description: "number of clicks on an annotable element"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ueac_params'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /update/sessionstart:
+    put:
+      tags:
+      - "update"
+      description: "update session start events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /update/sessionend:
+    put:
+      tags:
+      - "update"
+      description: "Update session end events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"    
+  /update/formstart:
+    put:
+      tags:
+      - "update"
+      description: "Update form start"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"       
+  /update/formend:
+    put:
+      tags:
+      - "update"
+      description: "Update form end"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"     
+  /update/clicks:
+    put:
+      tags:
+      - "update"
+      description: "Update clicks events"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Update'
+      responses:
+        200:
+          description: "A message information that data was updated."
+          schema:
+            $ref: "#/definitions/Message"
+        201:
+          description: "A message information that data was inserted."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /remove:
+    delete:
+      tags:
+      - "remove"
+      summary: "remove"
+      description: "remove data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: params 
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Document_Delete'
+      responses:
+        200:
+          description: "Message data removed"
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+          schema:
+            $ref: "#/definitions/Message"
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /test:
+    get:
+      tags:
+      - "test"
+      summary: "Test API"
+      description: ""
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "A message to check available API."
+          schema:
+            $ref: "#/definitions/Message"          
+definitions:
+  Document:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+      score:
+        type: "number"
+        format: "float"
+        description: "Relevancy in finding."
+      data:
+        type: "string"
+        description: "document data."
+  Document_Update:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+      content:
+        type: "object"
+        description: "Valid json like used in insert method."
+        properties: {}
+  Document_Delete:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique identifier representing a specific document."
+  Response_200:
+    properties:
+      count:
+        type: "number"
+        format: "int"
+        description: "Unique identifier representing a specific document."
+      results:
+        type: "array"
+        items:
+          $ref: "#/definitions/Document"   
+  Message:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  uet_params:
+    type: "object"
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      timestamp:
+        type: string
+        description: timestamp
+    required:
+      - userID
+      - e-serviceID
+      - timestamp
+  uetsa_params:
+    type: "object"
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      timestamp:
+        type: string
+        description: timestamp
+      sessionDuration:
+        type: string
+        description: duration od the session
+      averageTime:
+        type: number
+        format: float
+        description: average time
+    required:
+      - userID
+      - e-serviceID
+      - timestamp  
+      - sessionDuration
+      - averageTime
+  ueft_params:
+    type: "object"
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      formID:
+        type: string
+        description: form id
+      timestamp:
+        type: string
+        description: timestamp
+    required:
+      - userID
+      - e-serviceID
+      - formID
+      - timestamp
+  ueac_params:
+    type: "object"
+    properties:
+      userID:
+        type: string
+        description: user id
+      e-serviceID:
+        type: string
+        description: task description
+      annotableElementID:
+        type: string
+        description: annotable element id
+      clicks:
+        type: integer
+        description: clicks number
+    required:
+      - userID
+      - e-serviceID
+      - annotableElementID
+      - clicks

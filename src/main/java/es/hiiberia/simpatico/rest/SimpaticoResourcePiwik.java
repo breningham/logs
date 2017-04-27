@@ -40,17 +40,25 @@ public class SimpaticoResourcePiwik {
 	private static String FILE_LOG = SimpaticoProperties.simpaticoLog_Piwik;
 	private static String THIS_RESOURCE = "Piwik";
 	
+	private static int numLinesPrintStackInternalError = 1;
+	
+	
 	@GET
     @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
         	
-		return SimpaticoResourceUtils.findRequest(request, uriInfo, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+		try {
+			return SimpaticoResourceUtils.findRequest(request, uriInfo, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
 	
 	
 	@GET
-	@Path("/testVisitsDuration")
+	@Path("/test/visitsduration")
     @Produces(MediaType.APPLICATION_JSON)
 	public Response testVisitsDuration(@Context HttpServletRequest request) {
 		try {
@@ -96,12 +104,9 @@ public class SimpaticoResourcePiwik {
 
 			return response;
 		} catch (Exception e) {
-			Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-		}
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
 	}
 
 	/**

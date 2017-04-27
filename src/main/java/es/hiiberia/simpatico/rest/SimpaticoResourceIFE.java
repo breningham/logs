@@ -1,6 +1,5 @@
 package es.hiiberia.simpatico.rest;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
@@ -28,7 +26,7 @@ import es.hiiberia.simpatico.utils.Utils;
 @Path("/ife")
 public class SimpaticoResourceIFE {
 
-	private static String ES_INDEX = SimpaticoProperties.elasticSearchLogsIndex;
+	private static String ES_INDEX = SimpaticoProperties.elasticSearchSharedIndex;
 	private static String ES_TYPE =  "IFE";
 	private static String ES_FIELD_SEARCH = SimpaticoProperties.elasticSearchFieldSearch;
 	private static String FILE_LOG = SimpaticoProperties.simpaticoLog_Logs;
@@ -51,8 +49,10 @@ public class SimpaticoResourceIFE {
 	private static String EVENT_FORM_END = "form_end";
 	private static String EVENT_ELEMENT_CLICKS = "elements_clicks";
 	
+	private static int numLinesPrintStackInternalError = 1;
+	
 	@GET
-    @Path("/find_force")
+    @Path("/find/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find_force(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
 
@@ -61,16 +61,13 @@ public class SimpaticoResourceIFE {
 	    	
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
 		} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
 	
     @GET
-    @Path("/find_sessionstart")
+    @Path("/find/sessionstart")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find_sessionstart(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
     	
@@ -93,16 +90,13 @@ public class SimpaticoResourceIFE {
 			
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
     @GET
-    @Path("/find_sessionend")
+    @Path("/find/sessionend")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find_sessionend(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
 
@@ -124,16 +118,13 @@ public class SimpaticoResourceIFE {
 	    	
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
     @GET
-    @Path("/find_formstart")
+    @Path("/find/formstart")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find_formstart(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
     	
@@ -156,16 +147,13 @@ public class SimpaticoResourceIFE {
 			
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
     @GET
-    @Path("/find_formend")
+    @Path("/find/formend")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find_formend(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
 
@@ -187,16 +175,13 @@ public class SimpaticoResourceIFE {
 	    	
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
         
     @GET
-    @Path("/find_clicks")
+    @Path("/find/clicks")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find_clicks(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
 
@@ -218,113 +203,176 @@ public class SimpaticoResourceIFE {
 	    	
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
     @POST
-    @Path("/insert_sessionstart")
+    @Path("/insert/sessionstart")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insert_session_start(@Context HttpServletRequest request, String postData) {
     	
-    	return insert(request, postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, timestamp: <datetime>}   												event: session_start */
+		
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject != null) {
+				if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) {
+					badRequest = false;
+					jsonObject.put(EVENT, EVENT_SESSION_START);
+				}
+			}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.insertRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     @POST
-    @Path("/insert_sessionend")
+    @Path("/insert/sessionend")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insert_session_end(@Context HttpServletRequest request, String postData) {
     	
-    	return insert(request, postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, timestamp: <datetime>, sessionDuration: <int>, averageTime: <float>}   	event: session_end		*/
+		
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject != null) {
+				if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP) 
+						&& jsonObject.has(SESSION_DURATION) && jsonObject.has(AVERAGE_TIME)) {
+					badRequest = false;
+					jsonObject.put(EVENT, EVENT_SESSION_END);
+				}
+			}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.insertRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     @POST
-    @Path("/insert_formstart")
+    @Path("/insert/formstart")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insert_form_start(@Context HttpServletRequest request, String postData) {
     	
-    	return insert(request, postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, formID: <string>, timestamp: <datetime>}   								event: form_start */
+		
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject != null) {
+				if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
+						&& jsonObject.has(TIMESTAMP)) {
+					badRequest = false;
+					jsonObject.put(EVENT, EVENT_FORM_START);
+				}
+			}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.insertRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     @POST
-    @Path("/insert_formend")
+    @Path("/insert/formend")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insert_form_end(@Context HttpServletRequest request, String postData) {
     	
-    	return insert(request, postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, formID: <string>, timestamp: <datetime>}   								event: form_end   	*/
+
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
+    				&& jsonObject.has(TIMESTAMP)) {
+    			badRequest = false;
+    			jsonObject.put(EVENT, EVENT_FORM_END);
+    		}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.insertRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     @POST
-    @Path("/insert_clicks")
+    @Path("/insert/clicks")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insert_elements_clicks(@Context HttpServletRequest request, String postData) {
     	
-    	return insert(request, postData);
-    }
-    
-    /**
-     * Insert a json document. The postData must be a valid json (we store the full json)
-     * @param request
-     * @param postData
-     * @return
-     */
-    @POST
-    @Path("/insert")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response insert(@Context HttpServletRequest request, String postData) {
-    	/* JSON: {userID: <string>, e-serviceID: <string>, timestamp: <datetime>}   												event: session_start
-    	 		 {userID: <string>, e-serviceID: <string>, timestamp: <datetime>, sessionDuration: <int>, averageTime: <float>}   	event: session_end
-    	 		 {userID: <string>, e-serviceID: <string>, formID: <string>, timestamp: <datetime>}   								event: form_start
-    	 		 {userID: <string>, e-serviceID: <string>, formID: <string>, timestamp: <datetime>}   								event: form_end
-    	 		 {userID: <string>, e-serviceID: <string>, annotableElementID: <string>, clicks: <datetime>}   						event: elements_clicks
+    	/* JSON: {userID: <string>, e-serviceID: <string>, annotableElementID: <string>, clicks: <datetime>}   						event: elements_clicks
     	*/
-    	
-    	boolean badRequest = true;
-    	
-    	try {
-	    	// Check parameters and generate event attribute
-	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
-	    	if (jsonObject != null) {
-	    		if (jsonObject.length() == 3 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_SESSION_START);
-	    		} else if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP) 
-	    				&& jsonObject.has(SESSION_DURATION) && jsonObject.has(AVERAGE_TIME)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_SESSION_END);
-	    		} else if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
-	    				&& jsonObject.has(TIMESTAMP)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_FORM_START);
-	    		} else if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
-	    				&& jsonObject.has(TIMESTAMP)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_FORM_END);
-	    		} else if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(ANNOTABLE_ELEMENT_ID)
-	    				&& jsonObject.has(CLICKS)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_ELEMENT_CLICKS);
-	    		}
-	    	}
-	    	
-	    	if (!badRequest) {    	
-	    		
-	    		return SimpaticoResourceUtils.insertRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
-	    	}
-	    	
-	    	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject != null) {
+				if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(ANNOTABLE_ELEMENT_ID)
+						&& jsonObject.has(CLICKS)) {
+					badRequest = false;
+					jsonObject.put(EVENT, EVENT_ELEMENT_CLICKS);
+				}
+			}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.insertRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
 			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
 			
-    	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
@@ -335,7 +383,7 @@ public class SimpaticoResourceIFE {
      * @return
      */
     @POST
-    @Path("/insert_force")
+    @Path("/insert/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insert_force(@Context HttpServletRequest request, String postData) {
     	
@@ -344,110 +392,178 @@ public class SimpaticoResourceIFE {
     		
     		return SimpaticoResourceUtils.insertRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }    
         
-    /**
-     * Update a json document. The postData must be a valid json and format: {"id": "<id to update>", "content": "<json>"}. 
-     * If json has the same keys that the old document, the document updates.
-     * If the document does not exists, it is created.
-     * @param request
-     * @param postData
-     * @return
-     */
+
     @PUT
-    @Path("/update")
+    @Path("/update/sessionstart")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@Context HttpServletRequest request, String postData) {
-    	// Check params like insert
-    	boolean badRequest = true;
+    public Response update_session_start(@Context HttpServletRequest request, String postData) {
     	
-    	try {
-	    	// Check parameters and generate event attribute
-	    	JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
-	    	if (jsonObject != null) {   // params + id attr
-	    		if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_SESSION_START);
-	    		} else if (jsonObject.length() == 6 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP) 
-	    				&& jsonObject.has(SESSION_DURATION) && jsonObject.has(AVERAGE_TIME)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_SESSION_END);
-	    		} else if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
-	    				&& jsonObject.has(TIMESTAMP)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_FORM_START);
-	    		} else if (jsonObject.length() == 6 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
-	    				&& jsonObject.has(TIMESTAMP)) { // 4 field + id field + 1 anyone field to set event_end (to diff from session_start)
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_FORM_END);
-	    		} else if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(ANNOTABLE_ELEMENT_ID)
-	    				&& jsonObject.has(CLICKS)) {
-	    			badRequest = false;
-	    			jsonObject.put(EVENT, EVENT_ELEMENT_CLICKS);
-	    		}
-	    	}
-	    	
-	    	if (!badRequest) {    	
-	    		
-	    		return SimpaticoResourceUtils.updateRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
-	    	}
-	    	
-	    	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, timestamp: <datetime>}   												event: session_start */
+		
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject != null) {
+				if (jsonObject.length() == 4 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)) { // 4 = id attr + others
+					badRequest = false;
+					jsonObject.put(EVENT, EVENT_SESSION_START);
+				}
+			}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.updateRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
 			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
 			
-    	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
     @PUT
-    @Path("/update_sessionstart")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update_session_start(@Context HttpServletRequest request, String postData) {
-    	
-    	return update(request, postData);
-    }
-    
-    @PUT
-    @Path("/update_sessionend")
+    @Path("/update/sessionend")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update_session_end(@Context HttpServletRequest request, String postData) {
     	
-    	return update(request, postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, timestamp: <datetime>, sessionDuration: <int>, averageTime: <float>}   	event: session_end		*/
+		
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject != null) {
+				if (jsonObject.length() == 6 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(TIMESTAMP)  
+						&& jsonObject.has(SESSION_DURATION) && jsonObject.has(AVERAGE_TIME)) { // 5 = id attr + others
+					badRequest = false;
+					jsonObject.put(EVENT, EVENT_SESSION_END);
+				}
+			}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.updateRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     @PUT
-    @Path("/update_formstart")
+    @Path("/update/formstart")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update_form_start(@Context HttpServletRequest request, String postData) {
     	
-    	return update(request, postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, formID: <string>, timestamp: <datetime>}   								event: form_start */
+		
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject != null) {
+				if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
+						&& jsonObject.has(TIMESTAMP)) {
+					badRequest = false;
+					jsonObject.put(EVENT, EVENT_FORM_START);
+				}
+			}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.updateRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     @PUT
-    @Path("/update_formend")
+    @Path("/update/formend")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update_form_end(@Context HttpServletRequest request, String postData) {
     	
-    	return update(request, postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, formID: <string>, timestamp: <datetime>}   								event: form_end   	*/
+
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
+    				&& jsonObject.has(TIMESTAMP)) {
+    			badRequest = false;
+    			jsonObject.put(EVENT, EVENT_FORM_END);
+    		}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.updateRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     @PUT
-    @Path("/update_clicks")
+    @Path("/update/clicks")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update_elements_clicks(@Context HttpServletRequest request, String postData) {
     	
-    	return update(request, postData);
+    	/* JSON: {userID: <string>, e-serviceID: <string>, annotableElementID: <string>, clicks: <datetime>}   						event: elements_clicks
+    	*/
+
+		boolean badRequest = true;
+		
+		try {
+			// Check parameters and generate event attribute
+			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			if (jsonObject != null) {
+				if (jsonObject.length() == 5 && jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(ANNOTABLE_ELEMENT_ID)
+						&& jsonObject.has(CLICKS)) {
+					badRequest = false;
+					jsonObject.put(EVENT, EVENT_ELEMENT_CLICKS);
+				}
+			}
+			
+			if (!badRequest) {    	
+				
+				return SimpaticoResourceUtils.updateRequest(request, jsonObject.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+			}
+			
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     /**
@@ -459,7 +575,7 @@ public class SimpaticoResourceIFE {
      * @return
      */
     @PUT
-    @Path("/update_force")
+    @Path("/update/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update_force(@Context HttpServletRequest request, String postData) {
     	
@@ -468,11 +584,8 @@ public class SimpaticoResourceIFE {
 
 			return SimpaticoResourceUtils.updateRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
@@ -486,7 +599,12 @@ public class SimpaticoResourceIFE {
     @Path("/remove")
     @Produces(MediaType.APPLICATION_JSON)
     public Response remove(@Context HttpServletRequest request, String postData) {
-    	return SimpaticoResourceUtils.removeRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	try {
+			return SimpaticoResourceUtils.removeRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
        
     
@@ -496,15 +614,5 @@ public class SimpaticoResourceIFE {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response test() {
     	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API!");
-	}
-    
-    
-    /** Method to redirect to web API **/
-    @GET
-	@Path("/")
-	@Produces(MediaType.APPLICATION_JSON)
-	public void index() {
-    	URI uri = UriBuilder.fromUri("http://127.0.0.1:8080/simpatico/").build();
-    	Response.seeOther(uri);
 	}
 }

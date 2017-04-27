@@ -2,6 +2,7 @@ package es.hiiberia.simpatico.rest;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -76,6 +77,9 @@ public class SimpaticoResourceUtils {
 	public static int serverBadRequestCode = 400;
 	public static int serverInternalServerErrorCode = 500;
 	
+	public static String getInternalErrorMessageWithStackTrace(Exception e, int numLines) {
+		return e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e, numLines);
+	}
 	
 	public static String exceptionStringify(Exception e) {
 		String rt = "Exception message: " + e.getMessage() + "\n";
@@ -92,181 +96,177 @@ public class SimpaticoResourceUtils {
 		return error.toString();
 	}
 	
-public static Response findRequest(HttpServletRequest request, Map<String, List<String>> queryParams, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) {
+	public static String exceptionStringifyStack(Exception e, int maxNumLines) {
+		
+		StringWriter writer = new StringWriter();
+	    e.printStackTrace(new PrintWriter(writer));
+	    String[] lines = writer.toString().split("\n");
+	    StringBuilder sb = new StringBuilder();
+	    
+	    for (int i = 0; i < Math.min(lines.length, maxNumLines); i++) {
+	        sb.append(lines[i]).append("\n");
+	    }
+	    return sb.toString();
+	}
+	
+	public static void logException (Exception e, String FILE_LOG, String THIS_RESOURCE) {
+		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
+	}
+	
+	public static Response findRequest(HttpServletRequest request, Map<String, List<String>> queryParams, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) throws IOException, Exception {
 		
 		ArrayList<String> literalWords = new ArrayList<>();
     	int limit = 0; 
     	String fieldSortName = "";
     	SortOrder sortOrder = SortOrder.ASC; // Inicialize. If fieldSort is empty dont sort
     	
-    	try {
-	    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
-	    	 	
-	    	// Process query params
-	        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-	            String key = entry.getKey();
-	            List<String> values = entry.getValue();
-	            
-	            // literal words
-	            if (key.contentEquals(SimpaticoResourceUtils.wordsParam)) {
-	            	for (String word : values) {
-	            		// Comma separated and add to array
-	            		for (String splitWord : word.split(SimpaticoResourceUtils.separateParam)) {
-	            			literalWords.add(splitWord);
-	            		}
-	            	}
-	            // Limit	
-	            } else if (key.contentEquals(SimpaticoResourceUtils.limitParam)) {
-	            	if (!values.isEmpty() && Utils.isInteger(values.get(0))) {
-	            		limit = Integer.parseInt(values.get(0));
-	            	}
-	            // Sort
-	            } else if (key.contentEquals(SimpaticoResourceUtils.sortASCParam)) {
-	            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
-	            	sortOrder = SortOrder.ASC;
-	            } else if (key.contentEquals(SimpaticoResourceUtils.sortDESCParam)) {
-	            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
-	            	sortOrder = SortOrder.DESC;
-	            } else {
-	            	// BAD PARAMS
-	            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
-	    			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badParamsRequestResponse);
-	            }
-	        }
-	        	        
-	        SearchResponse responseES;
-	        // No params, so empty request -> return full documents stored
-	        if (literalWords.isEmpty()) {
-	        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, fieldSortName, sortOrder, limit);
-	        } else {
-	        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_FIELD_SEARCH, literalWords, fieldSortName, sortOrder, limit);
-	        }
-	        
-	        return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.searchResponse2JSONResponse(responseES));
-    	} catch (Exception e) {
-    		// Print the exception and its trace on log
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-    	}
+    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+    	 	
+    	// Process query params
+        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+            String key = entry.getKey();
+            List<String> values = entry.getValue();
+            
+            // literal words
+            if (key.contentEquals(SimpaticoResourceUtils.wordsParam)) {
+            	for (String word : values) {
+            		// Comma separated and add to array
+            		for (String splitWord : word.split(SimpaticoResourceUtils.separateParam)) {
+            			literalWords.add(splitWord);
+            		}
+            	}
+            // Limit	
+            } else if (key.contentEquals(SimpaticoResourceUtils.limitParam)) {
+            	if (!values.isEmpty() && Utils.isInteger(values.get(0))) {
+            		limit = Integer.parseInt(values.get(0));
+            	}
+            // Sort
+            } else if (key.contentEquals(SimpaticoResourceUtils.sortASCParam)) {
+            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
+            	sortOrder = SortOrder.ASC;
+            } else if (key.contentEquals(SimpaticoResourceUtils.sortDESCParam)) {
+            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
+            	sortOrder = SortOrder.DESC;
+            } else {
+            	// BAD PARAMS
+            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+    			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badParamsRequestResponse);
+            }
+        }
+        	        
+        SearchResponse responseES;
+        // No params, so empty request -> return full documents stored
+        if (literalWords.isEmpty()) {
+        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_TYPE, fieldSortName, sortOrder, limit);
+        } else {
+        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, literalWords, fieldSortName, sortOrder, limit);
+        }
+        
+        return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.searchResponse2JSONResponse(responseES));
 	}
 
-	public static Response findRequest(HttpServletRequest request, UriInfo uriInfo, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) {
+	public static Response findRequest(HttpServletRequest request, UriInfo uriInfo, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) throws IOException, Exception {
 		
 		ArrayList<String> literalWords = new ArrayList<>();
     	int limit = 0; 
     	String fieldSortName = "";
     	SortOrder sortOrder = SortOrder.ASC; // Inicialize. If fieldSort is empty dont sort
     	
-    	try {
-    		// Query params
-	    	Map<String, List<String>> queryParams = uriInfo.getQueryParameters();
-	    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
-	    	 	
-	    	// Process query params
-	        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-	            String key = entry.getKey();
-	            List<String> values = entry.getValue();
-	            
-	            // literal words
-	            if (key.contentEquals(SimpaticoResourceUtils.wordsParam)) {
-	            	for (String word : values) {
-	            		// Comma separated and add to array
-	            		for (String splitWord : word.split(SimpaticoResourceUtils.separateParam)) {
-	            			literalWords.add(splitWord);
-	            		}
-	            	}
-	            // Limit	
-	            } else if (key.contentEquals(SimpaticoResourceUtils.limitParam)) {
-	            	if (!values.isEmpty() && Utils.isInteger(values.get(0))) {
-	            		limit = Integer.parseInt(values.get(0));
-	            	}
-	            // Sort
-	            } else if (key.contentEquals(SimpaticoResourceUtils.sortASCParam)) {
-	            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
-	            	sortOrder = SortOrder.ASC;
-	            } else if (key.contentEquals(SimpaticoResourceUtils.sortDESCParam)) {
-	            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
-	            	sortOrder = SortOrder.DESC;
-	            } else {
-	            	// BAD PARAMS
-	            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
-	    			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badParamsRequestResponse);
-	            }
-	        }
-	        	        
-	        SearchResponse responseES;
-	        // No params, so empty request -> return full documents stored
-	        if (literalWords.isEmpty()) {
-	        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, fieldSortName, sortOrder, limit);
-	        } else {
-	        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_FIELD_SEARCH, literalWords, fieldSortName, sortOrder, limit);
-	        }
-	        
-	        return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.searchResponse2JSONResponse(responseES));
-    	} catch (Exception e) {
-    		// Print the exception and its trace on log
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-    	}
+		// Query params
+    	Map<String, List<String>> queryParams = uriInfo.getQueryParameters();
+    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+    	 	
+    	// Process query params
+        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+            String key = entry.getKey();
+            List<String> values = entry.getValue();
+            
+            // literal words
+            if (key.contentEquals(SimpaticoResourceUtils.wordsParam)) {
+            	for (String word : values) {
+            		// Comma separated and add to array
+            		for (String splitWord : word.split(SimpaticoResourceUtils.separateParam)) {
+            			literalWords.add(splitWord);
+            		}
+            	}
+            // Limit	
+            } else if (key.contentEquals(SimpaticoResourceUtils.limitParam)) {
+            	if (!values.isEmpty() && Utils.isInteger(values.get(0))) {
+            		limit = Integer.parseInt(values.get(0));
+            	}
+            // Sort
+            } else if (key.contentEquals(SimpaticoResourceUtils.sortASCParam)) {
+            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
+            	sortOrder = SortOrder.ASC;
+            } else if (key.contentEquals(SimpaticoResourceUtils.sortDESCParam)) {
+            	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
+            	sortOrder = SortOrder.DESC;
+            } else {
+            	// BAD PARAMS
+            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+    			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badParamsRequestResponse);
+            }
+        }
+        	        
+        SearchResponse responseES;
+        // No params, so empty request -> return full documents stored
+        if (literalWords.isEmpty()) {
+        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_TYPE, fieldSortName, sortOrder, limit);
+        } else {
+        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, literalWords, fieldSortName, sortOrder, limit);
+        }
+        
+        return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.searchResponse2JSONResponse(responseES));
 	}
 	
-	public static Response insertRequest(HttpServletRequest request, String postData, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) {
-    	try {
-			String id = "";
-			IndexResponse responseInsert;
-    		Response response;
-    		
-    		JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
-    		if (jsonObject != null) {
-    			Logger.getLogger(FILE_LOG).info("Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData); // Converted in Utils.createJSONStringIfValid
-                
-                // Elastic search connector
-    			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
-    			
-                // Check if exist index
-    			if (!connector.existsIndex(ES_INDEX)) {
-    				connector.createIndexWithDateField(ES_INDEX, ES_TYPE, SimpaticoProperties.elasticSearchCreatedFieldName);
-    			}
-    			
-    			// Add created time in utc
-    			jsonObject.put(SimpaticoProperties.elasticSearchCreatedFieldName, new DateTime(new Date()).withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-    			
-    			// Check if "_id" param inside
-    			if (jsonObject.has(SimpaticoResourceUtils._idParam)) {
-    				id = jsonObject.getString(SimpaticoResourceUtils._idParam);
-    				jsonObject.remove(SimpaticoResourceUtils._idParam);
-    				// Insert data with id
-    				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, id, jsonObject.toString());
-    			} else {
-    				// Insert data without id
-    				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, jsonObject.toString());
-    			}
-    			
-    			if (responseInsert.getResult() == Result.UPDATED) {
-					response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, SimpaticoResourceUtils.dataUpdatedESResponse);
-				} else {
-					response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverCreatedCode, SimpaticoResourceUtils.dataInsertedESResponse);
-				}
-    		} else {
-    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
-    			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
-    		}
-    		
-    		return response;
-    	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-    	}
+	public static Response insertRequest(HttpServletRequest request, String postData, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) throws Exception {
+		
+		String id = "";
+		IndexResponse responseInsert;
+		Response response;
+		
+		JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+		if (jsonObject != null) {
+			Logger.getLogger(FILE_LOG).info("Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData); // Converted in Utils.createJSONStringIfValid
+            
+            // Elastic search connector
+			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
+			
+            // Check if exist index
+			if (!connector.existsIndex(ES_INDEX)) {
+				connector.createIndexWithDateField(ES_INDEX, ES_TYPE, SimpaticoProperties.elasticSearchCreatedFieldName);
+			}
+			
+			// Add created time in utc
+			jsonObject.put(SimpaticoProperties.elasticSearchCreatedFieldName, new DateTime(new Date()).withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+			
+			// Check if "_id" param inside
+			if (jsonObject.has(SimpaticoResourceUtils._idParam)) {
+				id = jsonObject.getString(SimpaticoResourceUtils._idParam);
+				jsonObject.remove(SimpaticoResourceUtils._idParam);
+				// Insert data with id
+				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, id, jsonObject.toString());
+			} else {
+				// Insert data without id
+				responseInsert = connector.insertDocument(ES_INDEX, ES_TYPE, jsonObject.toString());
+			}
+			
+			if (responseInsert.getResult() == Result.UPDATED) {
+				response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, SimpaticoResourceUtils.dataUpdatedESResponse);
+			} else {
+				response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverCreatedCode, SimpaticoResourceUtils.dataInsertedESResponse);
+			}
+		} else {
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+		}
+		
+		return response;
     }
 	
-	public static Response updateRequest(HttpServletRequest request, String postData, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) {
+	public static Response updateRequest(HttpServletRequest request, String postData, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) throws Exception {
     	
     	String id = null, content = null;
     	
@@ -325,74 +325,53 @@ public static Response findRequest(HttpServletRequest request, Map<String, List<
     		
     		// Include in json _id to insert with these id
     		JSONObject jsonInsertContent = Utils.createJSONObjectIfValid(content);
-    		try {
-				jsonInsertContent.put(SimpaticoResourceUtils._idParam, id);
-			} catch (JSONException e1) {
-				Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e1.getMessage());
-	    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e1.getMessage());
-				Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e1.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e1));
-	    		
-				return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-			}
+			jsonInsertContent.put(SimpaticoResourceUtils._idParam, id);
     		return insertRequest(request, jsonInsertContent.toString(), ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
-    	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
     	}
     }
 	
-	public static Response removeRequest(HttpServletRequest request, String postData, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) {
-    	try {        	
-    		Response response;
-    		boolean badRequest = false;
-    		String id = null;
-    		
-    		// Check JSON
-    		JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
-    		if (jsonObject == null) {
-    			badRequest = true;
-    		} else {
-    			// Check json attributes
-    			id = jsonObject.optString(SimpaticoResourceUtils.idParam);
-    			if (id == null || id.isEmpty()) {
-    				badRequest = true; 
-    			}
-    		}
-    		
-    		if (badRequest) {
-    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
-    			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
-    			
-    		} else {    		
-    			Logger.getLogger(FILE_LOG).info("Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData); 
-    			
-	            // Elastic search connector
-				ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
-				
-	            // Check if exist index
-				if (!connector.existsIndex(ES_INDEX)) {
-					connector.createIndexWithDateField(ES_INDEX, ES_TYPE, SimpaticoProperties.elasticSearchCreatedFieldName);
-				}
-				
-				// Delete data
-				DeleteResponse delete = connector.deleteDocument(ES_INDEX, ES_TYPE, id);
-				if (delete.getResult() == Result.NOT_FOUND) {
-					response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverNoContentCode, "");
-				} else {
-					response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, SimpaticoResourceUtils.dataRemovedESResponse);
-				}    		
-    		}
-    		return response;
-    	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-    	}
+	public static Response removeRequest(HttpServletRequest request, String postData, String ES_INDEX, String ES_TYPE, String ES_FIELD_SEARCH, String FILE_LOG, String THIS_RESOURCE) throws Exception {
+        	
+		Response response;
+		boolean badRequest = false;
+		String id = null;
+		
+		// Check JSON
+		JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+		if (jsonObject == null) {
+			badRequest = true;
+		} else {
+			// Check json attributes
+			id = jsonObject.optString(SimpaticoResourceUtils.idParam);
+			if (id == null || id.isEmpty()) {
+				badRequest = true; 
+			}
+		}
+		
+		if (badRequest) {
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
+			
+		} else {    		
+			Logger.getLogger(FILE_LOG).info("Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData); 
+			
+            // Elastic search connector
+			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
+			
+            // Check if exist index
+			if (!connector.existsIndex(ES_INDEX)) {
+				connector.createIndexWithDateField(ES_INDEX, ES_TYPE, SimpaticoProperties.elasticSearchCreatedFieldName);
+			}
+			
+			// Delete data
+			DeleteResponse delete = connector.deleteDocument(ES_INDEX, ES_TYPE, id);
+			if (delete.getResult() == Result.NOT_FOUND) {
+				response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverNoContentCode, "");
+			} else {
+				response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, SimpaticoResourceUtils.dataRemovedESResponse);
+			}    		
+		}
+		return response;
     }
 	
 	/**
@@ -441,8 +420,14 @@ public static Response findRequest(HttpServletRequest request, Map<String, List<
      */
     public static Response createMessageResponse (int status, String message) {
     	// {"message": <message>}
-    	String msg = "{\"message\": \"" + message.trim() + "\"}";
-    	return Response.status(status).entity(msg).build();
+    	JSONObject jsonObj = new JSONObject();
+    	try {
+			jsonObj.put("message", message.trim());
+			return Response.status(status).entity(jsonObj.toString()).build();
+		} catch (JSONException e) {
+			String msg = "{\"message\": \"Error Generating message\"}";
+			return Response.status(status).entity(msg).build();
+		}
     }
     
     /**

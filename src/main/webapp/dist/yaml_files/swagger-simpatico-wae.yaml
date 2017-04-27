@@ -2,9 +2,9 @@
 swagger: "2.0"
 info:
   version: "1.0.0"
-  title: "Simpatico SF API"
+  title: "Simpatico WAE API"
 host: "simpatico.hi-iberia.es:4570"
-basePath: "/simpatico/api/sf"
+basePath: "/simpatico/api/wae"
 schemes:
 - "https"
 produces:
@@ -14,7 +14,7 @@ paths:
     get:
       tags:
       - "find"
-      summary: "find data"
+      description: "Find data"
       produces:
       - "application/json"
       parameters:
@@ -53,10 +53,10 @@ paths:
           schema:
             $ref: "#/definitions/Message"
   /insert:
-    post:
+    get:
       tags:
-      - "insert data"
-      summary: "insert"
+      - "insert"
+      description: "Insert data"
       produces:
       - "application/json"
       parameters:
@@ -64,7 +64,7 @@ paths:
         in: body
         required: true
         schema:
-          $ref: '#/definitions/uec_params'
+          $ref: '#/definitions/uet_params'
       responses:
         200:
           description: "A message information that data was updated."
@@ -86,7 +86,7 @@ paths:
     put:
       tags:
       - "update"
-      summary: "update data"
+      description: "Update data"
       produces:
       - "application/json"
       parameters:
@@ -116,7 +116,7 @@ paths:
     delete:
       tags:
       - "remove"
-      summary: "remove data"
+      description: "remove data"
       produces:
       - "application/json"
       parameters:
@@ -138,24 +138,6 @@ paths:
           description: "Unexpected error."
           schema:
             $ref: "#/definitions/Message"
-  /selectdialog:
-    get:
-      tags:
-      - "selectdialog"
-      description: "Generate form dialog"
-      produces:
-      - "application/json"
-      parameters:
-      - name: params 
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/Select_Dialog'
-      responses:
-        200:
-          description: "A message to check available API."
-          schema:
-            $ref: "#/definitions/Message"
   /test:
     get:
       tags:
@@ -170,21 +152,6 @@ paths:
           schema:
             $ref: "#/definitions/Message"
 definitions:
-  Select_Dialog:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-        description: "Unique identifier representing a specific document."
-      ctz:
-        type: "boolean"
-        description: "If citizenpedia was used"
-      simpl:
-        type: "boolean"
-        description: "If simplification was used"
-      timeout:
-        type: "boolean"
-        description: "If timout exceeded"
   Document:
     type: "object"
     properties:
@@ -229,9 +196,8 @@ definitions:
     properties:
       message:
         type: "string"
-  uec_params:
+  uet_params:
     type: "object"
-    description: once the user finished with the session the Session Feedback component ask for some satisfaction measures.
     properties:
       userID:
         type: string
@@ -239,10 +205,10 @@ definitions:
       e-serviceID:
         type: string
         description: task description
-      complexity:
+      timestamp:
         type: string
-        description: component
+        description: timestamp
     required:
       - userID
       - e-serviceID
-      - complexity      
+      - timestamp      

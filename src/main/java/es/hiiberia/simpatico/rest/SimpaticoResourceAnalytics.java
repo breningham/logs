@@ -1,6 +1,5 @@
 package es.hiiberia.simpatico.rest;
 
-import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -11,7 +10,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import es.hiiberia.simpatico.utils.SimpaticoProperties;
@@ -19,18 +17,24 @@ import es.hiiberia.simpatico.utils.SimpaticoProperties;
 @Path("/analytics")
 public class SimpaticoResourceAnalytics {
 
-	private static String ES_INDEX = SimpaticoProperties.elasticSearchAnalyticsIndex;
-	private static String ES_TYPE =  SimpaticoProperties.elasticSearchAnalyticsType;
+	private static String ES_INDEX = SimpaticoProperties.elasticSearchHIIndex;
+	private static String ES_TYPE =  "DA";
 	private static String ES_FIELD_SEARCH = SimpaticoProperties.elasticSearchFieldSearch;
 	private static String FILE_LOG = SimpaticoProperties.simpaticoLog_Analytics;
 	private static String THIS_RESOURCE = "Analytics";
 	
+	private static int numLinesPrintStackInternalError = 1;
 	
 	@GET
-    @Path("/find")
+    @Path("/find/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
-    	return SimpaticoResourceUtils.findRequest(request, uriInfo, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	try {
+			return SimpaticoResourceUtils.findRequest(request, uriInfo, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
         
@@ -41,10 +45,15 @@ public class SimpaticoResourceAnalytics {
      * @return
      */
     @POST
-    @Path("/insert")
+    @Path("/insert/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insert(@Context HttpServletRequest request, String postData) {
-    	return SimpaticoResourceUtils.insertRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	try {
+			return SimpaticoResourceUtils.insertRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
         
@@ -57,10 +66,15 @@ public class SimpaticoResourceAnalytics {
      * @return
      */
     @PUT
-    @Path("/update")
+    @Path("/update/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context HttpServletRequest request, String postData) {
-    	return SimpaticoResourceUtils.updateRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	try {
+			return SimpaticoResourceUtils.updateRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
     
     
@@ -71,28 +85,23 @@ public class SimpaticoResourceAnalytics {
      * @return
      */
     @DELETE
-    @Path("/remove")
+    @Path("/remove/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response remove(@Context HttpServletRequest request, String postData) {
-    	return SimpaticoResourceUtils.removeRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	try {
+			return SimpaticoResourceUtils.removeRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
        
     
     /** Test Method **/
     @GET
-	@Path("/test")
+	@Path("/test/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response test() {
     	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API!");
-	}
-    
-    
-    /** Method to redirect to web API **/
-    @GET
-	@Path("/")
-	@Produces(MediaType.APPLICATION_JSON)
-	public void index() {
-    	URI uri = UriBuilder.fromUri("http://127.0.0.1:8080/simpatico/").build();
-    	Response.seeOther(uri);
 	}
 }

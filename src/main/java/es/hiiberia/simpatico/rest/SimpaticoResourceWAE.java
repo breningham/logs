@@ -1,6 +1,5 @@
 package es.hiiberia.simpatico.rest;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
@@ -28,7 +26,7 @@ import es.hiiberia.simpatico.utils.Utils;
 @Path("/wae")
 public class SimpaticoResourceWAE {
 
-	private static String ES_INDEX = SimpaticoProperties.elasticSearchLogsIndex;
+	private static String ES_INDEX = SimpaticoProperties.elasticSearchSharedIndex;
 	private static String ES_TYPE =  "WAE";
 	private static String ES_FIELD_SEARCH = SimpaticoProperties.elasticSearchFieldSearch;
 	private static String FILE_LOG = SimpaticoProperties.simpaticoLog_Logs;
@@ -42,6 +40,7 @@ public class SimpaticoResourceWAE {
 	private static String EVENT = "event";
 	private static String EVENT_WAE = "workflow_adaptation_request";
 	
+	private static int numLinesPrintStackInternalError = 1;
 	
     @GET
     @Path("/find")
@@ -67,32 +66,11 @@ public class SimpaticoResourceWAE {
 			
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
         
-    @GET
-    @Path("/find_force")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
-
-		try {
-	    	Map<String, List<String>> queryParams = uriInfo.getQueryParameters();
-	    	
-	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
-		} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-    	}
-    }
-    
     /**
      * Insert a json document. The postData must be a valid json (we store the full json)
      * @param request
@@ -126,38 +104,11 @@ public class SimpaticoResourceWAE {
 			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
 			
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
-    /**
-     * Force insert a json document. The postData must be a valid json (we store the full json)
-     * @param request
-     * @param postData
-     * @return
-     */
-    @POST
-    @Path("/insert_force")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response insert_force(@Context HttpServletRequest request, String postData) {
-    	
-    	// No check params    	
-    	try {
-    		
-    		return SimpaticoResourceUtils.insertRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
-    	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-    	}
-    }    
-        
     /**
      * Update a json document. The postData must be a valid json and format: {"id": "<id to update>", "content": "<json>"}. 
      * If json has the same keys that the old document, the document updates.
@@ -194,37 +145,8 @@ public class SimpaticoResourceWAE {
 			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
 			
     	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
-    	}
-    }
-    
-    /**
-     * Force update a json document. The postData must be a valid json and format: {"id": "<id to update>", "content": "<json>"}. 
-     * If json has the same keys that the old document, the document updates.
-     * If the document does not exists, it is created.
-     * @param request
-     * @param postData
-     * @return
-     */
-    @PUT
-    @Path("/update_force")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update_force(@Context HttpServletRequest request, String postData) {
-    	
-    	// No Check params
-    	try {
-
-			return SimpaticoResourceUtils.updateRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
-    	} catch (Exception e) {
-    		Logger.getLogger(FILE_LOG).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-    		Logger.getRootLogger().error("Exception in " + THIS_RESOURCE + ": " + e.getMessage());
-			Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).error("Exception in " + THIS_RESOURCE + ": " + e.getMessage() + "\n" + SimpaticoResourceUtils.exceptionStringifyStack(e));
-    		
-    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse);
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
     	}
     }
     
@@ -238,7 +160,12 @@ public class SimpaticoResourceWAE {
     @Path("/remove")
     @Produces(MediaType.APPLICATION_JSON)
     public Response remove(@Context HttpServletRequest request, String postData) {
-    	return SimpaticoResourceUtils.removeRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	try {
+			return SimpaticoResourceUtils.removeRequest(request, postData, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
     }
   
     
@@ -248,15 +175,5 @@ public class SimpaticoResourceWAE {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response test() {
     	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API!");
-	}
-    
-    
-    /** Method to redirect to web API **/
-    @GET
-	@Path("/")
-	@Produces(MediaType.APPLICATION_JSON)
-	public void index() {
-    	URI uri = UriBuilder.fromUri("http://127.0.0.1:8080/simpatico/").build();
-    	Response.seeOther(uri);
 	}
 }
