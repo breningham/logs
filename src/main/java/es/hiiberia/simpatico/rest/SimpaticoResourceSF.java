@@ -174,14 +174,19 @@ public class SimpaticoResourceSF {
     @GET
     @Path("/selectdialog")
     @Produces(MediaType.TEXT_HTML)
-    public String selectDialog(@QueryParam("id") String userId, @QueryParam("ctz") Boolean ctz, @QueryParam("simpl") Boolean simpl, @QueryParam("timeout") Boolean timeout) {
-    	String result = Forms.DIALOG_START;
+    public String selectDialog(@QueryParam("id") String userId, @QueryParam("ctz") Boolean ctz, @QueryParam("simpl") Boolean simpl, @QueryParam("timeout") Boolean timeout,
+    							@QueryParam("lang") String lang) {
+    	// Initialize the forms with the correct language
+    	Forms form = new Forms(lang);
     	
-    	if (ctz) result += Forms.DIALOG_CTZPEDIA;
-    	if (simpl) result += Forms.DIALOG_SIMPLIFICATION;
-    	if (timeout) result += Forms.DIALOG_TIMEOUT;
+    	// Put pieces together
+    	String result = form.getStartingDiv();
     	
-    	result += Forms.DIALOG_COMMON;
+    	if (ctz) result += form.getCtzPart();
+    	if (simpl) result += form.getSimplificationPart();
+    	if (timeout) result += form.getTimeoutPart();
+    	
+    	result += form.getCommonPart();
     	return result;
     }
     
