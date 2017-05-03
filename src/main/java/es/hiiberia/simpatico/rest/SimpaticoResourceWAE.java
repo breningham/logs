@@ -45,7 +45,7 @@ public class SimpaticoResourceWAE {
     @GET
     @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find_sf(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
+    public Response find(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
     	
     	try {
     		// Copy map (it is unmodificable)

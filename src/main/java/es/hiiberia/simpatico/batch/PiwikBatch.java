@@ -141,7 +141,7 @@ public class PiwikBatch {
 								.query("format", "json")
 								.query("token_auth", SimpaticoProperties.piwikAuthToken);
 		HttpResponse response = request.send();
-		Logger.getLogger(FILE_LOG).info("callPiwikApi: " + response.body());
+		Logger.getLogger(FILE_LOG).info("callPiwikApi (" + method + "): " + response.body());
 		return response.body();
 	}
 	

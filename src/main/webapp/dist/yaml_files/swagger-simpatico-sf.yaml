@@ -146,14 +146,29 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: params 
-        in: body
+      - name: "id"
+        in: "query"
+        type: "string"
+        description: "Unique identifier representing a specific document."
         required: true
-        schema:
-          $ref: '#/definitions/Select_Dialog'
+      - name: "ctz"
+        in: "query"
+        type: "boolean"
+        description: "If citizenpedia was used"
+        required: true
+      - name: "simpl"
+        in: "query"
+        type: "boolean"
+        description: "If simplification was used"
+        required: true
+      - name: "timeout"
+        in: "query"
+        type: "boolean"
+        description: "If timout exceeded"
+        required: true
       responses:
         200:
-          description: "A message to check available API."
+          description: "A dialog."
           schema:
             $ref: "#/definitions/Message"
   /test:
@@ -170,21 +185,6 @@ paths:
           schema:
             $ref: "#/definitions/Message"
 definitions:
-  Select_Dialog:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-        description: "Unique identifier representing a specific document."
-      ctz:
-        type: "boolean"
-        description: "If citizenpedia was used"
-      simpl:
-        type: "boolean"
-        description: "If simplification was used"
-      timeout:
-        type: "boolean"
-        description: "If timout exceeded"
   Document:
     type: "object"
     properties:
