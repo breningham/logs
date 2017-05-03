@@ -10,16 +10,30 @@
   <build>
     <finalName>simpatico</finalName>
     <plugins>
-         <plugin>
-             <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-compiler-plugin</artifactId>
-             <version>2.5.1</version>
-             <inherited>true</inherited>
-             <configuration>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.5.1</version>
+            <inherited>true</inherited>
+        	<configuration>
                  <source>1.7</source>
                  <target>1.7</target>
              </configuration>
-         </plugin>
+        </plugin>
+        <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>2.3</version>
+        </plugin>
+        <plugin>
+	        <groupId>org.apache.tomcat.maven</groupId>
+	        <artifactId>tomcat7-maven-plugin</artifactId>
+	        <version>2.2</version>
+	        <configuration>
+	            <url>http://localhost:8080/simpatico</url>
+	            <server>localhost</server>
+	            <path>/${project.build.finalName}</path>
+	        </configuration>
+        </plugin>
      </plugins>
   </build>
   
@@ -36,6 +50,12 @@
     </dependencyManagement>
 
     <dependencies>
+    	<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <version>2.5</version>
+		</dependency>
     	<!-- Elastic search -->
 		<dependency>
              <groupId>org.elasticsearch.client</groupId>

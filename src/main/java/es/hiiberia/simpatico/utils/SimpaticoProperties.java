@@ -12,8 +12,6 @@ public class SimpaticoProperties {
 	public static String simpaticoLog_Analytics = "analytics";
 	public static String simpaticoLog_Piwik =  "piwik";
 	
-	public static String simpaticoLog_Test =  "test";
-	
 	// ES config
 	public static String elasticSearchIp;
 	public static int elasticSearchPort;

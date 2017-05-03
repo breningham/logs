@@ -167,7 +167,6 @@ public class ElasticSearchConnector {
 	
 	/** Search **/
 	
-	// TODO check null when no expect null parameters
 	public SearchResponse search(String index) throws IOException {
 		return searchES (index, null, null, null, null, 0);
 	}
