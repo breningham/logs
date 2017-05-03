@@ -100,11 +100,11 @@ public class Forms {
 				    "</div>"+
 				    "<div id=\"face-radio-buttons-session-feedback\" class=\"cc-selector\">"+
 				      "<input id=\"face-happy-session-feedback\" class=\"input_hidden\" name=\"faces-session-feedback\" type=\"radio\" value=\"happy\"/>"+
-				      "<label for=\"happy\" data-face=\"happy\" class=\"left\" style=\"margin-left: 10%;border-radius: 20%;\"><img src=\"img/happy_face.png\" alt=\"Happy\"/></label>"+
+				      "<label for=\"face-happy-session-feedback\" data-face=\"happy\" class=\"left\" style=\"margin-left: 10%;border-radius: 20%;\"><img src=\"img/happy_face.png\" alt=\"Happy\"/></label>"+
 				      "<input id=\"face-normal-session-feedback\" class=\"input_hidden\" name=\"faces-session-feedback\" type=\"radio\" value=\"normal\"/>"+
-				      "<label for=\"normal\" data-face=\"normal\" style=\"margin-left: 20%;border-radius: 20%;\"><img src=\"img/normal_face.png\" alt=\"Normal\"/></label>"+
+				      "<label for=\"face-normal-session-feedback\" data-face=\"normal\" style=\"margin-left: 20%;border-radius: 20%;\"><img src=\"img/normal_face.png\" alt=\"Normal\"/></label>"+
 				      "<input id=\"face-sad-session-feedback\" class=\"input_hidden\" name=\"faces-session-feedback\" type=\"radio\" value=\"sad\"/>"+
-				      "<label for=\"sad\" data-face=\"sad\" class=\"right\" style=\"margin-right: 10%;border-radius: 20%;\"><img src=\"img/sad_face.png\" alt=\"Sad\" /></label>"+
+				      "<label for=\"face-sad-session-feedback\" data-face=\"sad\" class=\"right\" style=\"margin-right: 10%;border-radius: 20%;\"><img src=\"img/sad_face.png\" alt=\"Sad\" /></label>"+
 				    "</div>"+
 				  "</div>"+
 				  "<!-- Comments -->"+
