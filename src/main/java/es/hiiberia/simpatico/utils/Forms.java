@@ -189,7 +189,7 @@ public class Forms {
 				    	timeout +
 				    "</div>"+
 				    "<div id=\"session-feedback-comments\" class=\"session-feedback-comments\">"+
-				      "<textarea id=\"session-feedback-comments-text\" class=\"session-feedback-comments-text\" placeholder=\""+ timeout_placeholder +"\" cols=\"40\" rows=\"5\" style=\"resize: none;\"></textarea>"+
+				      "<textarea id=\"session-feedback-timeout-text\" class=\"session-feedback-comments-text\" placeholder=\""+ timeout_placeholder +"\" cols=\"40\" rows=\"5\" style=\"resize: none;\"></textarea>"+
 				    "</div>"+
 				  "</div>";
 	}	  
