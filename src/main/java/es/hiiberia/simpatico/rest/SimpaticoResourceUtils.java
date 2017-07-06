@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -122,7 +123,7 @@ public class SimpaticoResourceUtils {
     	String fieldSortName = "";
     	SortOrder sortOrder = SortOrder.ASC; // Inicialize. If fieldSort is empty dont sort
     	
-    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Query: " + queryParams.toString());
     	 	
     	// Process query params
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
@@ -151,7 +152,7 @@ public class SimpaticoResourceUtils {
             	sortOrder = SortOrder.DESC;
             } else {
             	// BAD PARAMS
-            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Query: " + queryParams.toString());
     			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badParamsRequestResponse);
             }
         }
@@ -176,7 +177,7 @@ public class SimpaticoResourceUtils {
     	
 		// Query params
     	Map<String, List<String>> queryParams = uriInfo.getQueryParameters();
-    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+    	Logger.getLogger(FILE_LOG).info("Find documents. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Query: " + queryParams.toString());
     	 	
     	// Process query params
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
@@ -205,7 +206,7 @@ public class SimpaticoResourceUtils {
             	sortOrder = SortOrder.DESC;
             } else {
             	// BAD PARAMS
-            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". Query: " + queryParams.toString());
+            	Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Find documents. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Query: " + queryParams.toString());
     			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badParamsRequestResponse);
             }
         }
@@ -229,7 +230,7 @@ public class SimpaticoResourceUtils {
 		
 		JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
 		if (jsonObject != null) {
-			Logger.getLogger(FILE_LOG).info("Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData); // Converted in Utils.createJSONStringIfValid
+			Logger.getLogger(FILE_LOG).info("Insert document. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". POST data: " + postData); // Converted in Utils.createJSONStringIfValid
             
             // Elastic search connector
 			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
@@ -259,7 +260,7 @@ public class SimpaticoResourceUtils {
 				response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverCreatedCode, SimpaticoResourceUtils.dataInsertedESResponse);
 			}
 		} else {
-			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". POST data: " + postData);
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Insert document. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". POST data: " + postData);
 			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
 		}
 		
@@ -288,16 +289,16 @@ public class SimpaticoResourceUtils {
     		}
     		
     		if (badRequest) {
-    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+    			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Update document. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Post data: " + postData);
     			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
     		} else {
     			// Creates JSON from string content to convert to XContenBuilder
     			JSONObject jsonContent = Utils.createJSONObjectIfValid(content);
     			if (jsonContent == null) { // Content not on Json format
-    				Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+    				Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Update document. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Post data: " + postData);
     				response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
     			} else {
-    				Logger.getLogger(FILE_LOG).info("Update document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+    				Logger.getLogger(FILE_LOG).info("Update document. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Post data: " + postData);
     				
     				String message = jsonContent.toString();
         			XContentParser parser = XContentFactory.xContent(XContentType.JSON).createParser(message.getBytes());
@@ -349,11 +350,11 @@ public class SimpaticoResourceUtils {
 		}
 		
 		if (badRequest) {
-			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData);
+			Logger.getLogger(FILE_LOG).warn("[BAD REQUEST] Delete document. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Post data: " + postData);
 			response = SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, SimpaticoResourceUtils.badPOSTRequestResponse);
 			
 		} else {    		
-			Logger.getLogger(FILE_LOG).info("Delete document. IP Remote: " + request.getRemoteAddr() + ". Post data: " + postData); 
+			Logger.getLogger(FILE_LOG).info("Delete document. IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request) + ". Post data: " + postData); 
 			
             // Elastic search connector
 			ElasticSearchConnector connector = ElasticSearchConnector.getInstance();
@@ -435,5 +436,36 @@ public class SimpaticoResourceUtils {
      */
     public static Response createMessageResponse (JSONObject json) {
     	return Response.status(serverOkCode).entity(json.toString()).build();
+    }
+    
+    /**
+     * Return headers 
+     */
+    public static String getHeaders (HttpServletRequest request) {
+    	String rtn = new String();
+    	
+    	@SuppressWarnings("rawtypes")
+        Enumeration headerNames = request.getHeaderNames();
+        while(headerNames.hasMoreElements()) {
+     	   String headerName = (String)headerNames.nextElement();
+     	   rtn += headerName + ": " + request.getHeader(headerName) + " ";
+        }
+        return rtn;
+    }
+    
+    /**
+     * Return header from Http request
+     */
+    public static String getHeader (HttpServletRequest request, String header) {
+    	
+    	return request.getHeader(header);
+    }
+    
+    /**
+     * Return real ip in header from proxy (i.e. Nginx)
+     */
+    public static String getRealIPHeader (HttpServletRequest request) {
+    	
+    	return request.getHeader(SimpaticoProperties.realIpHeaderName);
     }
 }

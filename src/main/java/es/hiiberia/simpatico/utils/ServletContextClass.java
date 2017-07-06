@@ -16,15 +16,17 @@ public class ServletContextClass implements ServletContextListener {
 		if (!SimpaticoProperties.getStrings()){
 			throw new InternalErrorException("Problems with SIMPATICO properties file");
 		}
+		
+		String version = "1.02";
 
 		// Start SIMPATICO
 		PiwikBatch.getInstance(); // Start getting data from Piwik
 		
-		Logger.getLogger(SimpaticoProperties.simpaticoLog_Logs).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
-		Logger.getLogger(SimpaticoProperties.simpaticoLog_Analytics).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
-		Logger.getLogger(SimpaticoProperties.simpaticoLog_Piwik).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
-		Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
-		Logger.getRootLogger().info("\n\n\nNew Execution. SIMPATICO STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Logs).info("\n\n\nNew Execution. SIMPATICO Version: " + version + " STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Analytics).info("\n\n\nNew Execution. SIMPATICO Version: " + version + " STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Piwik).info("\n\n\nNew Execution. SIMPATICO Version: " + version + " STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getLogger(SimpaticoProperties.simpaticoLog_Error).info("\n\n\nNew Execution. SIMPATICO Version: " + version + " STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
+		Logger.getRootLogger().info("\n\n\nNew Execution. SIMPATICO Version: " + version + " STARTED. PID: " + ManagementFactory.getRuntimeMXBean().getName());
 	}	
 	
 	public void contextDestroyed(ServletContextEvent arg0) {

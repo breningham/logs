@@ -6,12 +6,18 @@ Logs is a module for store/search/update multiple data from another modules.
 - Java 1.8+
 - J2EE Servlet Container (Tomcat 7+)
 - [Elastic Search (5.0+)](https://www.elastic.co/downloads/elasticsearch)
+- [Kibana (5.0+)](https://www.elastic.co/downloads/kibana) (Optional)
 - [Java IDE (eclipse)](https://www.eclipse.org/downloads/?)
 - [Piwik](https://piwik.org/docs/installation/)
 
 ## Configuration Elastic Search
 
-  1. Open `elasticsearch.yml` and change `clustername, ip` and `port` if you want
+  1. Open `elasticsearch.yml` and change `cluster.name`, `network.host` and `http.port`.
+  2. Set `path.data` and `path.logs` (optional)
+
+## Configuration Kibana
+
+  1. Set `elasticsearch.url` to elastic search ip (localhost)
 
 ## Configuration Piwik
 
@@ -26,6 +32,12 @@ Logs is a module for store/search/update multiple data from another modules.
   1. Open `simpatico.properties` and set `ip, port` and `clustername`
   2. Set `piwik.api_url` and `piwik.auth_token`
 
+## Extra Configuration
+  
+  #### 1. Proxy 
+  
+  If you use a proxy server (i.e Nginx), set `proxy_set_header X-Real-IP $remote_addr;` in each Logs project location to be able to access to real ip client and the whitelist ip filter works fine.
+  
 ## Installation
 
   1. Export java project like war file

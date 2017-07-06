@@ -12,6 +12,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.log4j.Logger;
+
 import es.hiiberia.simpatico.utils.SimpaticoProperties;
 
 @Path("/logs")
@@ -101,7 +103,32 @@ public class SimpaticoResourceLogs {
     @GET
 	@Path("/test/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response test() {
-    	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API!");
+	public Response testGet(@Context HttpServletRequest request) {
+    	Logger.getLogger(FILE_LOG).warn("[TEST] IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request));
+    	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API! Method: GET");
 	}
+    
+    @POST
+	@Path("/test/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response testPost(@Context HttpServletRequest request) {
+    	Logger.getLogger(FILE_LOG).warn("[TEST] IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request));
+    	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API! Method: POST");
+	}
+    
+    @PUT
+	@Path("/test/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response testPut(@Context HttpServletRequest request) {
+    	Logger.getLogger(FILE_LOG).warn("[TEST] IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request));
+    	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API! Method: PUT");
+	}
+    
+    @DELETE
+   	@Path("/test/")
+   	@Produces(MediaType.APPLICATION_JSON)
+   	public Response testDelete(@Context HttpServletRequest request) {
+    	Logger.getLogger(FILE_LOG).warn("[TEST] IP Remote: " + request.getRemoteAddr() + ". IP Header Real: " + SimpaticoResourceUtils.getRealIPHeader(request));
+       	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Welcome to SIMPATICO " + THIS_RESOURCE + " API! Method: DELETE");
+   	}
 }

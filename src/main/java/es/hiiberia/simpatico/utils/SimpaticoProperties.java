@@ -1,5 +1,7 @@
 package es.hiiberia.simpatico.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -21,13 +23,28 @@ public class SimpaticoProperties {
 	public static String elasticSearchHIIndex;
 	public static String elasticSearchSharedIndex;
 	public static String elasticSearchCreatedFieldName;
+	
 	// Search
 	public static String elasticSearchFieldSearch;
+	
 	// Piwik
 	public static String piwikApiUrl;
 	public static String piwikAuthToken;
 	public static String elasticSearchPiwikIndex;
 	public static String elasticSearchPiwikType;
+	
+	// Authentication AAC
+	public static Boolean aacUse;
+	public static String aacUrlServer;
+	public static String aacPathServer;
+	
+	public static String aacGetAuthUser;
+	public static String aacGetAuthPass;
+	
+	// Real IP header name
+	public static String realIpHeaderName;
+	// IPs allowed
+	public static List<String> ipsAllowed = new ArrayList<>();
 	
 	
 	public static boolean getStrings() {
@@ -35,7 +52,16 @@ public class SimpaticoProperties {
 		
 		ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("simpatico");
 		
-		try {			
+		try {
+			// AAC
+			aacUse = Boolean.parseBoolean(RESOURCE_BUNDLE.getString("authentication.use"));
+			aacUrlServer = RESOURCE_BUNDLE.getString("authentication.url");
+			aacPathServer = RESOURCE_BUNDLE.getString("authentication.path");
+			
+			aacGetAuthUser = RESOURCE_BUNDLE.getString("authentication.getauth.user");
+			aacGetAuthPass = RESOURCE_BUNDLE.getString("authentication.getauth.pass");
+			
+			
 			// Database
 			elasticSearchIp = RESOURCE_BUNDLE.getString("elasticsearch.ip");
 			elasticSearchPort = Integer.parseInt(RESOURCE_BUNDLE.getString("elasticsearch.port"));
@@ -52,6 +78,13 @@ public class SimpaticoProperties {
 			piwikAuthToken = RESOURCE_BUNDLE.getString("piwik.auth_token");
 			elasticSearchPiwikIndex = RESOURCE_BUNDLE.getString("elasticsearch.piwik.index");
 			elasticSearchPiwikType = RESOURCE_BUNDLE.getString("elasticsearch.piwik.type");
+			
+			// Real Ip header name
+			realIpHeaderName = RESOURCE_BUNDLE.getString("http.header.realip");
+			String [] ips = RESOURCE_BUNDLE.getString("authentication.whitelist.ip").split(",");
+			for (String ip : ips) {
+				ipsAllowed.add(ip.trim());
+			}
 			
 			result = true;
 		} catch (MissingResourceException e) {
