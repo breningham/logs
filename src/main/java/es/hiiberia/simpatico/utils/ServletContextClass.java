@@ -17,7 +17,7 @@ public class ServletContextClass implements ServletContextListener {
 			throw new InternalErrorException("Problems with SIMPATICO properties file");
 		}
 		
-		String version = "1.02";
+		String version = "1.10";
 
 		// Start SIMPATICO
 		PiwikBatch.getInstance(); // Start getting data from Piwik

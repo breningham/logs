@@ -1,6 +1,8 @@
 package es.hiiberia.simpatico.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +21,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.sort.SortOrder;
 
+import es.hiiberia.simpatico.utils.ElasticSearchConnector;
 import es.hiiberia.simpatico.utils.Forms;
 import es.hiiberia.simpatico.utils.SimpaticoProperties;
 import es.hiiberia.simpatico.utils.Utils;
@@ -178,12 +184,94 @@ public class SimpaticoResourceSF {
     							@QueryParam("lang") String lang) {
     	// Initialize the forms with the correct language
     	Forms form = new Forms(lang);
+    	boolean wordSimp = false;
+    	boolean phraseSimp = false;
+    	boolean paragraphSimp = false;
+    	
+    	// Search in ES what the user has done since he started the last session
+    	try {
+    		// XXX: Y si primero hacer una quuery para coger el último "session_start" y luego ya esta?
+    		// No la hago todavía por el lío más abajo explicado del "must" y el "should"
+        	List<String> words = new ArrayList<String>();
+        	words.add("paragraph_simplification");
+        	words.add("word_simplification");
+        	words.add("free_text_simplification");
+        	words.add("citizenpedia_content_request");
+        	words.add("session_start");
+        	// XXX: Al hacer la query, pone un "should" en vez de un "must". Me salen resultados con "form_start" también. Pero con "must" no me salen resultados
+        	SearchResponse responseES = ElasticSearchConnector.getInstance().searchByField("shared", null, "event", words, "created", SortOrder.DESC, 30, userId);
+        	JSONObject jsonRes = SimpaticoResourceUtils.searchResponse2JSONResponse(responseES);
+        	
+        	// Search in the results the info needed
+        	// XXX: Dos bucles. Uno solo para el último "session_start" y otro para el resto de cosas. Se soluciona cuando se solucione lo de arriba
+        	JSONArray results = jsonRes.getJSONArray("results");
+        	String lastSession = "";
+        	for (int i=0; i<results.length(); i++) {
+        		JSONObject data = results.getJSONObject(i);
+        		String event = data.getJSONObject("data").getString("event");
+        		if (event.equals("session_start")) {
+        			lastSession = data.getJSONObject("data").getString("created");
+        			Logger.getRootLogger().info("lastSession: " + lastSession);
+        			break;
+        		}
+        	}
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        	Date lastSessionDate = sdf.parse(lastSession);
+        	for (int i=0; i<results.length(); i++) {
+        		JSONObject data = results.getJSONObject(i);
+        		String event = data.getJSONObject("data").getString("event");
+        		String created = data.getJSONObject("data").getString("created");
+        		Date date = sdf.parse(created);
+        		if (event.equals("citizenpedia_content_request")) {
+//        			Logger.getRootLogger().info("Citizenpedia event in ES search");
+        			if (date.after(lastSessionDate)) {
+//        				Logger.getRootLogger().info("Citizenpedia event AFTER last session");
+        				ctz = true;
+        			} else {
+//        				Logger.getRootLogger().info("Citizenpedia event BEFORE last session");
+        			}
+        		}
+        		
+        		if (event.equals("paragraph_simplification")) {
+//        			Logger.getRootLogger().info("Paragraph simplification event in ES search");
+        			if (date.after(lastSessionDate)) {
+//        				Logger.getRootLogger().info("Paragraph simplification event AFTER last session");
+        				paragraphSimp = true;
+        			} else {
+//        				Logger.getRootLogger().info("Paragraph simplification event BEFORE last session");
+        			}
+        		}
+        		
+        		if (event.equals("word_simplification")) {
+//        			Logger.getRootLogger().info("Word simplification event in ES search");
+        			if (date.after(lastSessionDate)) {
+//        				Logger.getRootLogger().info("Word simplification event AFTER last session");
+        				wordSimp = true;
+        			} else {
+//        				Logger.getRootLogger().info("Word simplification event BEFORE last session");
+        			}
+        		}
+        		
+        		if (event.equals("free_text_simplification")) {
+//        			Logger.getRootLogger().info("Free text simplification event in ES search");
+        			if (date.after(lastSessionDate)) {
+//        				Logger.getRootLogger().info("Free text simplification event AFTER last session");
+        				phraseSimp = true;
+        			} else {
+//        				Logger.getRootLogger().info("Free text simplification event BEFORE last session");
+        			}
+        		}
+        	}
+		} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+		}
     	
     	// Put pieces together
     	String result = form.getStartingDiv();
-    	
     	if (ctz) result += form.getCtzPart();
-    	if (simpl) result += form.getSimplificationPart();
+    	if (wordSimp) result += form.getWordSimplificationPart();
+    	if (paragraphSimp) result += form.getParagraphSimplificationPart();
+    	if (phraseSimp) result += form.getPhraseSimplificationPart();
     	if (timeout) result += form.getTimeoutPart();
     	
     	result += form.getCommonPart();

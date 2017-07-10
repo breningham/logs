@@ -193,6 +193,18 @@ public class ElasticSearchConnector {
 		return searchES (index, type, boolQuery, fieldSort, ord, limit);
 	}
 	
+	public SearchResponse searchByField(String index, String type, String field, List<String> words, String fieldSort, SortOrder ord, int limit, String userID) throws IOException {
+		
+		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+		for (String word : words) {
+			boolQuery.should(QueryBuilders.matchQuery(field, word));
+		}
+		
+		boolQuery.must(QueryBuilders.termQuery("userID", userID));
+		
+		return searchES (index, type, boolQuery, fieldSort, ord, limit);
+	}
+	
 	private SearchResponse searchES (String index, String type, QueryBuilder qb, String fieldSort, SortOrder ord, int limit) throws IOException {
 		
 		try {

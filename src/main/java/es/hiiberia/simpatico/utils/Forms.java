@@ -128,7 +128,7 @@ public class Forms {
 				"</div>";
 	}
 			
-	public String getSimplificationPart() {
+	public String getParagraphSimplificationPart() {
 		return "<!-- Slider -->"+
 				  "<div id=\"slider-session-feedback-content\">"+
 				    "<div class=\"mensaje\">"+
@@ -140,8 +140,11 @@ public class Forms {
 				      "<div class=\"slider-horizontal-text-below-right\">"+ slider_useful +"</div>"+
 				      "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
 				    "</form>"+
-				  "</div>"+
-				  "<!-- Slider -->"+
+				  "</div>";
+	}
+	
+	public String getPhraseSimplificationPart() {
+		return "<!-- Slider -->"+
 				  "<div id=\"slider-session-feedback-content\">"+
 				    "<div class=\"mensaje\">"+
 				     	simpl_phrase +
@@ -152,8 +155,11 @@ public class Forms {
 				      "<div class=\"slider-horizontal-text-below-right\">"+ slider_useful +"</div>"+
 				      "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
 				    "</form>"+
-				  "</div>"+
-				  "<!-- Slider -->"+
+				  "</div>";
+	}
+	
+	public String getWordSimplificationPart() {
+		return "<!-- Slider -->"+
 				  "<div id=\"slider-session-feedback-content\">"+
 				    "<div class=\"mensaje\">"+
 				      simpl_word +
@@ -189,7 +195,7 @@ public class Forms {
 				    	timeout +
 				    "</div>"+
 				    "<div id=\"session-feedback-comments\" class=\"session-feedback-comments\">"+
-				      "<textarea id=\"session-feedback-comments-text\" class=\"session-feedback-comments-text\" placeholder=\""+ timeout_placeholder +"\" cols=\"40\" rows=\"5\" style=\"resize: none;\"></textarea>"+
+				      "<textarea id=\"session-feedback-timeout-text\" class=\"session-feedback-comments-text\" placeholder=\""+ timeout_placeholder +"\" cols=\"40\" rows=\"5\" style=\"resize: none;\"></textarea>"+
 				    "</div>"+
 				  "</div>";
 	}	  
