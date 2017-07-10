@@ -1,5 +1,6 @@
 package es.hiiberia.simpatico.rest;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
