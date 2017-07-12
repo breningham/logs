@@ -36,8 +36,6 @@ public class SimpaticoProperties {
 	// Authentication AAC
 	public static Boolean aacUse;
 	public static String aacUrlServer;
-	public static String aacPathServer;
-	public static String aacBasicProfilePathServer;
 	
 	public static String aacGetAuthUser;
 	public static String aacGetAuthPass;
@@ -57,11 +55,9 @@ public class SimpaticoProperties {
 			// AAC
 			aacUse = Boolean.parseBoolean(RESOURCE_BUNDLE.getString("authentication.use"));
 			aacUrlServer = RESOURCE_BUNDLE.getString("authentication.url");
-			aacPathServer = RESOURCE_BUNDLE.getString("authentication.path");
 			
 			aacGetAuthUser = RESOURCE_BUNDLE.getString("authentication.getauth.user");
 			aacGetAuthPass = RESOURCE_BUNDLE.getString("authentication.getauth.pass");
-			aacBasicProfilePathServer = RESOURCE_BUNDLE.getString("authentication.basicprofile.path");
 			
 			
 			// Database
