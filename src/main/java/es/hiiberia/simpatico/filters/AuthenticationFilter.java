@@ -45,7 +45,7 @@ public class AuthenticationFilter implements Filter {
    
    private BasicProfileService getService() {
 	   if (profileService == null) {
-		   synchronized (profileService) {
+		   synchronized (tokenCache) {
 			   if (profileService == null) {
 				   profileService = new BasicProfileService(SimpaticoProperties.aacUrlServer);
 			   }
