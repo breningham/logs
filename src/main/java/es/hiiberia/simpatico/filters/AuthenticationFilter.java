@@ -62,6 +62,11 @@ public class AuthenticationFilter implements Filter {
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) {
 	   
 	   try {
+           if (Boolean.TRUE.equals(request.getAttribute(NoAuthenticationFilter.NO_AUTHENTICATION_PARAM))) {
+    		   filterChain.doFilter(request, response);
+    		   return;
+    	   }
+		   
 		   String ipClient = request.getRemoteAddr();
 		   Logger.getRootLogger().info("[Auth filter] IP request: " + ipClient);		
 	       HttpServletRequest httpRequest = (HttpServletRequest) request;   
