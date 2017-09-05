@@ -178,7 +178,7 @@ public class SimpaticoResourceSF {
     }
     
 	
-    @GET
+    @POST
     @Path("/selectdialog")
     @Produces(MediaType.TEXT_HTML)
     public String selectDialog(@QueryParam("id") String userId, @QueryParam("ctz") Boolean ctz, @QueryParam("simpl") Boolean simpl, @QueryParam("timeout") Boolean timeout,
