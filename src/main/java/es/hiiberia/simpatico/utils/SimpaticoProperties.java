@@ -47,6 +47,14 @@ public class SimpaticoProperties {
 	// IPs allowed
 	public static List<String> ipsAllowed = new ArrayList<>();
 	
+	// Authentication domains
+	public static String domainNames;
+	// Domains allowed
+	public static List<String> domainsAllowed = new ArrayList<>();
+	// Referer Domains allowed
+	public static List<String> refererDomainsAllowed = new ArrayList<>();
+	
+	
 	
 	public static boolean getStrings() {
 		boolean result = false;
@@ -86,6 +94,18 @@ public class SimpaticoProperties {
 			String [] ips = RESOURCE_BUNDLE.getString("authentication.whitelist.ip").split(",");
 			for (String ip : ips) {
 				ipsAllowed.add(ip.trim());
+			}
+			
+			// Domain
+			String [] domains = RESOURCE_BUNDLE.getString("authentication.domains.allowed").split(",");
+			for (String domain : domains) {
+				domainsAllowed.add(domain.trim());
+			}
+			
+			// Domain
+			String [] refererDomains = RESOURCE_BUNDLE.getString("authentication.referers.domains.allowed").split(",");
+			for (String refererDomain : refererDomains) {
+				refererDomainsAllowed.add(refererDomain.trim());
 			}
 			
 			result = true;

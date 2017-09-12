@@ -53,7 +53,27 @@ public class AuthenticationFilter implements Filter {
 	    	   } else {
 	    		   Logger.getRootLogger().debug("[Auth filter] IP doesnt exists in whitelist. IP: " + ipClient + ". Method: " + httpRequest.getMethod());
 	    	   }
+	           
+	           // Check Referers domains allowed
+	           for (String referersDomain : SimpaticoProperties.refererDomainsAllowed) {
+	        	   if (SimpaticoResourceUtils.getHeader(httpRequest, "referer").contains(referersDomain)) {
+		        	   Logger.getRootLogger().info("[Auth filter] Request allowed by referer domain: " + referersDomain + ". IP: " + ipClient + ". Method: " + httpRequest.getMethod());
+		        	   filterChain.doFilter(request, response);
+		    		   return;
+		           }
+	           }
+	           
+	           
+	           // Check Domains allowed
+	           for (String domain : SimpaticoProperties.domainsAllowed) {
+	        	   if (httpRequest.getRequestURI().contains(domain)) {
+	        		   Logger.getRootLogger().info("[Auth filter] Request allowed without authentication. URL Requested: " + httpRequest.getRequestURL() + ". IP: " + ipClient + ". Method: " + httpRequest.getMethod());
+		        	   filterChain.doFilter(request, response);
+		    		   return;
+	        	   }
+	           }
 	    	   
+	           // Methods authentication
 	    	   Logger.getRootLogger().info("[Auth filter] Using filter. Method: " + httpRequest.getMethod());
 	    	   if (httpRequest.getMethod().equalsIgnoreCase("GET")) {
 	        	   // User/Pass base64 compare
