@@ -173,6 +173,7 @@ public class SimpaticoResourceUtils {
 		ArrayList<String> literalWords = new ArrayList<>();
     	int limit = 0; 
     	String fieldSortName = "";
+    	String fieldSearch = "";
     	SortOrder sortOrder = SortOrder.ASC; // Inicialize. If fieldSort is empty dont sort
     	
 		// Query params
@@ -197,6 +198,12 @@ public class SimpaticoResourceUtils {
             	if (!values.isEmpty() && Utils.isInteger(values.get(0))) {
             		limit = Integer.parseInt(values.get(0));
             	}
+            // Field Search	
+            } else if (key.contentEquals("field")) {
+            	if (!values.isEmpty()) {
+            		fieldSearch = values.get(0);
+            		//limit = Integer.parseInt(values.get(0));
+            	}
             // Sort
             } else if (key.contentEquals(SimpaticoResourceUtils.sortASCParam)) {
             	fieldSortName = SimpaticoProperties.elasticSearchCreatedFieldName;
@@ -213,9 +220,14 @@ public class SimpaticoResourceUtils {
         	        
         SearchResponse responseES;
         // No params, so empty request -> return full documents stored
-        if (literalWords.isEmpty()) {
+        if (!fieldSearch.isEmpty()) {
+        	//Logger.getRootLogger().info("[RESOURCE_UTILS] FINDING with field");
+        	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_TYPE, fieldSearch, literalWords, fieldSortName, sortOrder, limit);
+        } else if (literalWords.isEmpty()) {
+        	//Logger.getRootLogger().info("[RESOURCE_UTILS] NOP");
         	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_TYPE, fieldSortName, sortOrder, limit);
         } else {
+        	//Logger.getRootLogger().info("[RESOURCE_UTILS] NOP");
         	responseES = ElasticSearchConnector.getInstance().search(ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, literalWords, fieldSortName, sortOrder, limit);
         }
         
@@ -458,7 +470,8 @@ public class SimpaticoResourceUtils {
      */
     public static String getHeader (HttpServletRequest request, String header) {
     	
-    	return request.getHeader(header);
+    	String ret = request.getHeader(header);
+    	return ret != null ? ret: "";
     }
     
     /**

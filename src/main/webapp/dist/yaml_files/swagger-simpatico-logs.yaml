@@ -10,6 +10,62 @@ schemes:
 produces:
 - "application/json"
 paths:
+  /reduction-time-spent:
+    post:
+      tags:
+      - "Time spent"
+      summary: "Time spent completing form"
+      description: "Get increase or decrease percentage between time spent by users using Simpatico and those who do not use Simpatico.\nDates in UTC String"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "query"
+        description: "A valid JSON to insert."
+        required: true
+        schema:
+          $ref: "#/definitions/Message_KPI_Time"
+      responses:
+        200:
+          description: "A percentage or Infinity."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"
+  /percentage-complete-autonomously:
+    post:
+      tags:
+      - "Complete autonomously"
+      summary: "Time spent completing form"
+      description: "Get increase or decrease percentage between users that fill out completely the form using Simpatico and those who do not use Simpatico.\n"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "query"
+        description: "A valid JSON to insert."
+        required: true
+        schema:
+          $ref: "#/definitions/Message_KPI_Complete_Form"
+      responses:
+        200:
+          description: "A percentage or Infinity."
+          schema:
+            $ref: "#/definitions/Message"
+        400:
+          description: "Bad request."
+        500:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Message"          
   /find:
     get:
       tags:
@@ -186,11 +242,65 @@ definitions:
       id:
         type: "string"
         description: "Unique identifier representing a specific document."
+  Array_Users:
+    type: "string"
   Message:
     type: "object"
     properties:
       message:
         type: "string"
+  Message_KPI_Time:
+    type: "object"
+    properties:
+      usersSimpatico:
+        type: "array"      
+        items:
+          $ref: "#/definitions/Array_Users"
+      usersWithoutSimpatico:
+        type: "array"      
+        items:
+          $ref: "#/definitions/Array_Users"    
+      dateStart:
+        type: "string"
+        description: "Date in UTC"
+      dateEnd:
+        type: "string"
+        description: "Date in UTC"
+      testing:
+        type: "boolean"
+        description: "If true, it use values in keys averageTimeSpentUsersSimpatico and averageTimeSpentUsersWithoutSimpatico"  
+      averageTimeSpentUsersSimpatico:
+        type: "integer"
+        description: "Average time spent by users using Simpatico"  
+      averageTimeSpentUsersWithoutSimpatico:
+        type: "integer"
+        description: "Average time spent by users without using Simpatico"
+  Message_KPI_Complete_Form:
+    type: "object"
+    properties:
+      usersSimpatico:
+        type: "array"      
+        items:
+          $ref: "#/definitions/Array_Users"
+      usersWithoutSimpatico:
+        type: "array"      
+        items:
+          $ref: "#/definitions/Array_Users"    
+      dateStart:
+        type: "string"
+        description: "Date in UTC"
+      dateEnd:
+        type: "string"
+        description: "Date in UTC"
+      testing:
+        type: "boolean"
+        description: "If true, it use values in keys usersSimpaticoComplete and usersWithoutSimpaticoComplete"  
+      usersSimpaticoComplete:
+        type: "integer"
+        description: "Users array to check if them complete the form"  
+      usersWithoutSimpaticoComplete:
+        type: "integer"
+        description: "Users array to check if them complete the form"      
   inline_response_200:
     properties:
       count:

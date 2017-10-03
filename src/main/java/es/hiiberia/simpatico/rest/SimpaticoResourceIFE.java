@@ -46,7 +46,7 @@ public class SimpaticoResourceIFE {
 	private static String EVENT_SESSION_START = "session_start";
 	private static String EVENT_SESSION_END = "session_end";
 	private static String EVENT_FORM_START = "form_start";
-	private static String EVENT_FORM_END = "form_end";
+	public static String EVENT_FORM_END = "form_end";
 	private static String EVENT_ELEMENT_CLICKS = "elements_clicks";
 	
 	private static int numLinesPrintStackInternalError = 1;
