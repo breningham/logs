@@ -25,6 +25,9 @@ public class Forms {
 	private String timeout;
 	private String timeout_placeholder;
 	
+	private String wae_steps;
+	private String wae_blocks;
+	
 	public Forms(String lang) {
 		if (lang.equals("es")) {
 			/** Spanish **/
@@ -45,6 +48,9 @@ public class Forms {
 			
 			timeout = "La sesión tardó en completarse más de lo acostumbrado. ¿Tuvo algún problema con algún elemento del servicio?";
 			timeout_placeholder = "Explique los problemas encontrados...";
+			
+			wae_steps = "Fue útil la guía paso a paso?";
+			wae_blocks = "Fue útil la organizacin en bloques del servicio?";
 		} else if (lang.equals("it")) {
 			/** Italian **/
 			button_cancel = "Annulla";
@@ -52,18 +58,21 @@ public class Forms {
 			slider_useful = "Molto utile";
 			slider_unuseful = "Non è utile";
 			
-			common_faces = "Pensi che insieme strumenti di SIMPATICO ti ha facilitato la comprensione del servizio?";
+			common_faces = "Pensi che gli strumenti di SIMPATICO falicilitino la comprensione del servizio e la compilazione del modulo?";
 			common_comments = "Hai qualche suggerimento per gli sviluppatori di SIMPATICO?";
 			common_opinion_placeholder = "Scrivi una recensione...";
 			
-			simpl_paragraph = "E 'stato semplificando punto che ha chiamato utile per capire meglio il servizio?";
-			simpl_phrase = "È stata la semplificazione della frase che ha chiamato utile per capire meglio il servizio?";
-			simpl_word = "E 'stato semplificando parola chiamata utile per capire meglio il servizio?";
+			simpl_paragraph = "La semplificazione del paragrafo ti ha aiutato a capire meglio il senso di quanto richiesto?";
+			simpl_phrase = "La semplificazione della frase ti ha aiutato a capire meglio il senso di quanto richiesto?";
+			simpl_word = "La semplificazione della singola parola ti ha aiutato a capire meglio il senso di quanto richiesto?";
 			
-			ctz_slider = "Quanto utile è stata la sua richiesta al Citizenpedia?";
+			ctz_slider = "Quanto sono state utili le informazioni disponibili in Citizenpedia?";
 			
-			timeout = "La sessione ha preso per completare più del solito. Hai avuto problemi con qualsiasi elemento del servizio?";
+			timeout = "La tua sessione ha richiesto piu' tempo del previsto. Hai incontrato qualche difficoltà nella compilazione del modulo?";
 			timeout_placeholder = "Spiegare i problemi incontrati...";
+			
+			wae_steps = "Quanto e' stata utile la guida passo passo?";
+			wae_blocks = "Quanto e' stata utile l'organizzazione in blocchi del modulo?";
 		} else {
 			/** English (default) **/
 			button_cancel = "Cancel";
@@ -83,6 +92,9 @@ public class Forms {
 			
 			timeout = "The session took longer than usual. Did you have a problem with any element of the service?";
 			timeout_placeholder = "Explain the problems encountered...";
+			
+			wae_steps = "How much helpful has been the step-by-step guide?";
+			wae_blocks = "How much helpful has been the organization in blocks of the service?";
 		}
 	}
 	
@@ -198,5 +210,31 @@ public class Forms {
 				      "<textarea id=\"session-feedback-timeout-text\" class=\"session-feedback-comments-text\" placeholder=\""+ timeout_placeholder +"\" cols=\"40\" rows=\"5\" style=\"resize: none;\"></textarea>"+
 				    "</div>"+
 				  "</div>";
-	}	  
+	}
+	
+	public String getWAEPart() {
+		return "<!-- Slider -->"+
+				"<div id=\"slider-session-feedback-content\">"+
+				  "<div class=\"mensaje\">"+
+				  	wae_steps +
+				  "</div>"+
+				  "<form>"+
+				    "<input id=\"slider_session_feedback_wae_steps\" class=\"slider\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback_wae_steps.value\"/>"+
+				    "<div class=\"slider-horizontal-text-below-left\">"+ slider_unuseful +"</div>"+
+				    "<div class=\"slider-horizontal-text-below-right\">"+ slider_useful +"</div>"+
+				    "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
+				  "</form>"+
+				"</div>"+
+			"<!-- Slider -->"+
+				"<div id=\"slider-session-feedback-content\">"+
+				  "<div class=\"mensaje\">"+
+				  	wae_blocks +
+				  "</div>"+
+				  "<form>"+
+				    "<input id=\"slider_session_feedback_wae_blocks\" class=\"slider\" type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"0\" oninput=\"sliderOutputSessionFeedback.value = slider_session_feedback_wae_blocks.value\"/>"+
+				    "<div class=\"slider-horizontal-text-below-left\">"+ slider_unuseful +"</div>"+
+				    "<div class=\"slider-horizontal-text-below-right\">"+ slider_useful +"</div>"+
+				    "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
+				  "</form>"+
+				"</div>";
 }
