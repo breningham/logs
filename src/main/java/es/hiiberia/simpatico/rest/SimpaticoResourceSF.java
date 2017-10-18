@@ -181,7 +181,7 @@ public class SimpaticoResourceSF {
     @Path("/selectdialog")
     @Produces(MediaType.TEXT_HTML)
     public String selectDialog(@QueryParam("id") String userId, @QueryParam("ctz") Boolean ctz, @QueryParam("simpl") Boolean simpl, @QueryParam("timeout") Boolean timeout,
-    							@QueryParam("lang") String lang) {
+    							@QueryParam("lang") String lang, @QueryParam("wae") Boolean wae) {
     	// Initialize the forms with the correct language
     	Forms form = new Forms(lang);
     	boolean wordSimp = false;
@@ -261,6 +261,16 @@ public class SimpaticoResourceSF {
 //        				Logger.getRootLogger().info("Free text simplification event BEFORE last session");
         			}
         		}
+			
+			if (event.equals("wae")) {
+//        			Logger.getRootLogger().info("WAE event in ES search");
+				if (date.after(lastSessionDate)) {
+//        				Logger.getRootLogger().info("WAE event AFTER last session");
+					wae = true;
+				} else {
+//        				Logger.getRootLogger().info("WAE event BEFORE last session");
+				}
+			}
         	}
 		} catch (Exception e) {
 			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
@@ -273,6 +283,7 @@ public class SimpaticoResourceSF {
     	if (paragraphSimp) result += form.getParagraphSimplificationPart();
     	if (phraseSimp) result += form.getPhraseSimplificationPart();
     	if (timeout) result += form.getTimeoutPart();
+	if (wae) result += form.getWAEPart();
     	
     	result += form.getCommonPart();
     	return result;
