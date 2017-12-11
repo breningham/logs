@@ -318,15 +318,12 @@ definitions:
           $ref: "#/definitions/Array_Users"    
       dateStart:
         type: "string"
-        example: "2017-10-20T08:00:00Z"
         description: "Date in UTC"
       dateEnd:
         type: "string"
-        example: "2017-10-25T00:00:00Z"
         description: "Date in UTC"
       testing:
         type: "boolean"
-        example: false
         description: "If true, it use values in keys averageTimeSpentUsersSimpatico and averageTimeSpentUsersWithoutSimpatico"  
       averageTimeSpentUsersSimpatico:
         type: "integer"
@@ -339,15 +336,12 @@ definitions:
     properties:
       dateStart:
         type: "string"
-        example: "2017-10-20T00:00:00Z"
         description: "Date in UTC"
       dateEnd:
         type: "string"
-        example: "2017-10-25T00:00:00Z"
         description: "Date in UTC"
       testing:
         type: "boolean"
-        example: false
         description: "If true, it use values in keys averageTimeSpentUsersSimpatico and averageTimeSpentUsersWithoutSimpatico"  
       averageTimeSpentUsersSimpatico:
         type: "integer"
@@ -368,15 +362,12 @@ definitions:
           $ref: "#/definitions/Array_Users"    
       dateStart:
         type: "string"
-        example: "2017-10-20T00:00:00Z"
         description: "Date in UTC"
       dateEnd:
         type: "string"
-        example: "2017-10-25T00:00:00Z"
         description: "Date in UTC"
       testing:
         type: "boolean"
-        example: false
         description: "If true, it use values in keys usersSimpaticoComplete and usersWithoutSimpaticoComplete"  
       usersSimpaticoComplete:
         type: "integer"
@@ -389,15 +380,12 @@ definitions:
     properties:
       dateStart:
         type: "string"
-        example: "2017-10-20T00:00:00Z"
         description: "Date in UTC"
       dateEnd:
         type: "string"
-        example: "2017-10-25T00:00:00Z"
         description: "Date in UTC"
       testing:
         type: "boolean"
-        example: false
         description: "If true, it use values in keys usersSimpaticoComplete and usersWithoutSimpaticoComplete"  
       usersSimpaticoComplete:
         type: "integer"

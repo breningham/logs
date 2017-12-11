@@ -39,7 +39,7 @@ public class SimpaticoResourceLogs {
 	private static String THIS_RESOURCE = "Logs";
 	
 	private static int numLinesPrintStackInternalError = 1;
-	private static int MAX_NUM_RESULTS_REQUEST = 1000;
+	private static int MAX_NUM_RESULTS_REQUEST = 10000;
 	
 	/* KPIs */
 	@POST
@@ -216,8 +216,8 @@ public class SimpaticoResourceLogs {
 					JSONObject jsonUsersWithoutSimpatico = Utils.createJSONObjectIfValid(response2.toString());
 					
 					// Arrays to process data from elastic search and get how time users spent
-					ArrayList<UserKPIObject> alUsersSimpatico = new ArrayList<>();
-					ArrayList<UserKPIObject> alUsersWithoutSimpatico = new ArrayList<>();
+					ArrayList<UserKPIObject> alUsersSimpatico = new ArrayList<>();   // ArrayList usersSimpatico
+					ArrayList<UserKPIObject> alUsersWithoutSimpatico = new ArrayList<>(); // ArrayList usersWithoutSimpatico
 					
 					// Process Simpatico users
 					JSONObject jsonUsersSimpaticoResults = jsonUsersSimpatico.getJSONObject("hits");
@@ -314,7 +314,7 @@ public class SimpaticoResourceLogs {
 						sup = timeSpentSimpaticoUsers - timeSpentNoSimpaticoUsers;
 						inf = timeSpentSimpaticoUsers;
 					}
-					percentage = Math.round((sup/inf * 100) * 100.0) / 100.0;
+					percentage = Math.round((sup/inf * 100) * 100.0) / 100.0; // Round to 2 decimals
 				}
 
 				String valueReturn;
@@ -323,6 +323,204 @@ public class SimpaticoResourceLogs {
 				} else {
 					valueReturn = String.valueOf(percentage) + "%";
 				}
+				return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, valueReturn);
+    			
+    			/*double percentage = timeSpentSimpaticoUsers / timeSpentNoSimpaticoUsers;
+    			percentage = Math.round((percentage * 100) * 100.0) / 100.0;
+    			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, percentage + "%");*/
+    		}   		
+    		
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, "JSON in bad format");
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
+    }
+
+    /* KPIs */
+	@POST
+    @Path("/reduction-time-spent-all-users")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reductionTimeSpentAll(@Context HttpServletRequest request, String postData) {
+    	try {
+    		// IDs user using SIMPATICO
+    		// IDS user without using simpatico
+    		// Date
+    		
+    		JSONObject json = Utils.createJSONObjectIfValid(postData);
+    		if (json != null) {
+    			long timeSpentNoSimpaticoUsers = 0;
+    			long timeSpentSimpaticoUsers = 0;
+    			long averageSpentSimpaticoUsers = 0, averageSpentNoSimpaticoUsers = 0;
+    			int numSimpaticoUsers = 0, numNoSimpaticoUsers = 0;
+    			
+    			// Testing mode
+    			Boolean testing = json.optBoolean("testing");
+    			if (testing) {
+    				averageSpentSimpaticoUsers = json.optLong("averageTimeSpentUsersSimpatico", -1);
+    				averageSpentSimpaticoUsers = json.optLong("averageTimeSpentUsersWithoutSimpatico", -1);
+    				Logger.getRootLogger().debug("[LOGS] Testing Mode. averageTimeSpentUsersSimpatico: " + timeSpentNoSimpaticoUsers + ", averageTimeSpentUsersWithoutSimpatico: " + timeSpentSimpaticoUsers);
+    				if (timeSpentNoSimpaticoUsers == -1 || timeSpentSimpaticoUsers == -1) {
+    					return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, "JSON in bad format. averageTimeSpentUsersSimpatico and averageTimeSpentUsersWithoutSimpatico keys dont found");
+    				}  
+    			} else {
+	    			String dateStart = json.opt("dateStart").toString();
+	    			String dateEnd = json.opt("dateEnd").toString();
+	    			
+	    			
+	    			// Do request
+	        		String query1 = new String(
+	        						"{\n" + 
+	        			    		"    \"query\": {\n" + 
+	        						"        \"bool\" : {\n " +
+	        						"            \"must\" : {\n" +
+	        			    		"                \"range\" : {\n" + 
+	        			    		"                    \"created\" : {\n" + 
+	        			    		"                        \"gte\": \"" + dateStart + "\",\n" + 
+	        			    		"                        \"lt\": \"" + dateEnd + "\"\n" +
+	        			    		"                    }\n" + 
+	        			    		"                }\n" + 
+	        			    		"            },\n" + 
+	        			    		"            \"must_not\" : [\n" +
+	        			    		"                {\"match\" : { \"event\": \"elements_clicks\"} }, \n" +
+	        			    		"                {\"match\" : { \"event\": \"session_start\"} }, \n" +
+	        			    		"                {\"match\" : { \"event\": \"session_end\"} } \n" +
+	        			    		"            ]\n" + 
+	        			    		"        }\n" + 
+	        			    		"    },\n" + 
+	        			    		"    \"sort\": {\n" +
+	        			    		"      \"created\": { \"order\": \"asc\" }\n" +
+	        			    		"    }\n" +
+	        			    		"}\n");
+	        		 
+	
+	        		URL url = new URL("http://" + SimpaticoProperties.elasticSearchIp + ":9200/shared/IFE/_search?size=" + MAX_NUM_RESULTS_REQUEST);
+	                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	                connection.setRequestMethod("GET");
+	                connection.setDoOutput(true);
+	                connection.setRequestProperty("Content-Type", "application/json");
+	                connection.setRequestProperty("Accept", "application/json");
+	                OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
+	                osw.write(query1);
+	                osw.flush();
+	                osw.close();
+	                Logger.getRootLogger().debug("[LOGS] Sending first GET to url: " + url);
+	                Logger.getRootLogger().debug("[LOGS] Response code: " + connection.getResponseCode());
+	
+	        		BufferedReader in = new BufferedReader(
+	        		        new InputStreamReader(connection.getInputStream()));
+	        		String inputLine;
+	        		StringBuffer response = new StringBuffer();
+	
+	        		while ((inputLine = in.readLine()) != null) {
+	        			response.append(inputLine);
+	        		}
+	        		in.close();
+	
+	        		//print result
+	        		Logger.getRootLogger().debug("[LOGS] Response: " + response.toString());
+	 
+	        		
+					// Convert each response to json and calculate percentage
+					JSONObject jsonUsers = Utils.createJSONObjectIfValid(response.toString());
+					
+					// Arrays to process data from elastic search and get how time users spent
+					ArrayList<UserKPIObject> alUsersSimpatico = new ArrayList<>();   // ArrayList usersSimpatico
+					ArrayList<UserKPIObject> alUsersWithoutSimpatico = new ArrayList<>(); // ArrayList usersWithoutSimpatico
+					
+					// Process users
+					JSONObject jsonUsersResults = jsonUsers.getJSONObject("hits");
+					if (jsonUsersResults.getInt("total") > 0) {
+						JSONObject hitSource;
+						String event;
+						String userId;
+						String timestamp;
+						//String created;
+						Date timeDate;
+						JSONArray arrayHitsUsers = jsonUsersResults.getJSONArray("hits");
+						for (int i = 0; i < arrayHitsUsers.length(); i++) {
+							hitSource = arrayHitsUsers.getJSONObject(i).getJSONObject("_source");
+							userId = hitSource.getString("userID");
+							event = hitSource.getString("event");
+							timestamp = hitSource.getString("timestamp");
+							//created = hitSource.getString("created");
+							//DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime(timestamp);
+							//timeDate = dateTime.toDate();
+							timeDate = new Date(Long.parseLong(timestamp));
+							if (userId.contains("no_user_logged_")) {  // User No Simpatico
+								if (event.equalsIgnoreCase("form_start")) {
+									alUsersWithoutSimpatico.add(0, new UserKPIObject(userId, timeDate));
+								} else {
+									// Search first ocurrence with these ID and add it. If doesnt find any previous item, it seems that event form_start doesnt occurs, so we dont save 
+									for (UserKPIObject oUser : alUsersWithoutSimpatico) {
+										if (oUser.getUser().equalsIgnoreCase(userId)) {
+											oUser.addDate(timeDate, event);
+										}
+									}
+								}
+							} else {
+								if (event.equalsIgnoreCase("form_start")) {
+									alUsersSimpatico.add(0, new UserKPIObject(userId, timeDate));
+								} else {
+									// Search first ocurrence with these ID and add it. If doesnt find any previous item, it seems that event form_start doesnt occurs, so we dont save 
+									for (UserKPIObject oUser : alUsersSimpatico) {
+										if (oUser.getUser().equalsIgnoreCase(userId)) {
+											oUser.addDate(timeDate, event);
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					// Average time spent simpatico Users
+					for (UserKPIObject oUser : alUsersSimpatico) {
+						timeSpentSimpaticoUsers += oUser.getDiffDateMS();
+					}
+					if (alUsersSimpatico.size() > 0) {
+						averageSpentSimpaticoUsers = timeSpentSimpaticoUsers / alUsersSimpatico.size();
+					}
+					
+					// Average time spent NO simpatico Users
+					for (UserKPIObject oUser : alUsersWithoutSimpatico) {
+						timeSpentNoSimpaticoUsers += oUser.getDiffDateMS();
+					}
+					if (alUsersWithoutSimpatico.size() > 0) {
+						averageSpentNoSimpaticoUsers = timeSpentNoSimpaticoUsers / alUsersWithoutSimpatico.size();
+					}
+					
+					numSimpaticoUsers = alUsersSimpatico.size();
+					numNoSimpaticoUsers = alUsersWithoutSimpatico.size();
+							
+    			}
+				
+				// Page to do percentage. Inverse because less time is better https://www.skillsyouneed.com/num/percent-change.html
+				double percentage;
+				boolean decrease = false;
+				if (averageSpentNoSimpaticoUsers == 0) {
+					return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Infinity " + " -> average_time_spent_Simpatico: " + averageSpentSimpaticoUsers + ". average_time_spent_NoSimpatico: " + averageSpentNoSimpaticoUsers 
+							+ ". total_time_Simpatico: " +  timeSpentSimpaticoUsers + " numSimpaticoUsers: " + numSimpaticoUsers
+							+ ". total_time_NoSimpatico: " +  timeSpentNoSimpaticoUsers + " numNoSimpaticoUsers: " + numNoSimpaticoUsers);
+				} else { 
+					double sup = averageSpentNoSimpaticoUsers - averageSpentSimpaticoUsers;
+					double inf = averageSpentNoSimpaticoUsers;
+					if (sup < 0) { // There is a decrease
+						decrease = true;
+						sup = averageSpentSimpaticoUsers - averageSpentNoSimpaticoUsers;
+						inf = averageSpentSimpaticoUsers;
+					}
+					percentage = Math.round((sup/inf * 100) * 100.0) / 100.0; // Round to 2 decimals
+				}
+
+				String valueReturn;
+				if (decrease) {
+					valueReturn = "-" + String.valueOf(percentage) + "%";
+				} else {
+					valueReturn = String.valueOf(percentage) + "%";
+				}
+				valueReturn += " -> average_time_spent_Simpatico: " + averageSpentSimpaticoUsers + ". average_time_spent_NoSimpatico: " + averageSpentNoSimpaticoUsers 
+						+ ". total_time_Simpatico: " +  timeSpentSimpaticoUsers + " numSimpaticoUsers: " + numSimpaticoUsers
+						+ ". total_time_NoSimpatico: " +  timeSpentNoSimpaticoUsers + " numNoSimpaticoUsers: " + numNoSimpaticoUsers;
 				return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, valueReturn);
     			
     			/*double percentage = timeSpentSimpaticoUsers / timeSpentNoSimpaticoUsers;
@@ -604,7 +802,7 @@ public class SimpaticoResourceLogs {
 						sup = usersCompleteFormWithoutSimpatico - usersCompleteFormSimpatico;
 						inf = usersCompleteFormWithoutSimpatico;
 					}
-					percentage = Math.round((sup/inf * 100) * 100.0) / 100.0;
+					percentage = Math.round((sup/inf * 100) * 100.0) / 100.0; // Round to 2 decimals
 				}
 				
 				String valueReturn;
@@ -619,6 +817,201 @@ public class SimpaticoResourceLogs {
     			percentage = Math.round((percentage * 100) * 100.0) / 100.0;   // Round to 2 decimals
 				
 				return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, percentage + "%");*/
+    		}   		
+    		
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, "JSON in bad format");
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
+    }
+
+    /* KPIs */
+	@POST
+    @Path("/percentage-complete-autonomously-all-users")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response percentageCompleteAutonomouslyAll(@Context HttpServletRequest request, String postData) {
+    	try {
+    		// IDs user using SIMPATICO
+    		// IDS user without using simpatico
+    		// Date
+    		
+    		JSONObject json = Utils.createJSONObjectIfValid(postData);
+    		if (json != null) {
+    			int usersCompleteFormSimpatico = 0;
+    			int usersCompleteFormWithoutSimpatico = 0;
+    			int numSimpaticoUsers = 0, numNoSimpaticoUsers = 0;
+    			
+    			// Testing mode
+    			Boolean testing = json.optBoolean("testing");
+    			if (testing) {
+    				usersCompleteFormSimpatico = json.optInt("usersSimpaticoComplete", -1);
+    				usersCompleteFormWithoutSimpatico = json.optInt("usersWithoutSimpaticoComplete", -1);
+    				Logger.getRootLogger().debug("[LOGS] Testing Mode. usersSimpaticoComplete: " + usersCompleteFormSimpatico + ", usersWithoutSimpatico: " + usersCompleteFormWithoutSimpatico);
+    				if (usersCompleteFormSimpatico == -1 || usersCompleteFormWithoutSimpatico == -1) {
+    					return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, "JSON in bad format. usersSimpatico and usersWithoutSimpatico keys dont found");
+    				}    
+    			} else {
+	    			String dateStart = json.opt("dateStart").toString();
+	    			String dateEnd = json.opt("dateEnd").toString();
+	    			
+	    			
+	    			// Do request
+	        		String query1 = new String(
+	        						"{\n" + 
+	        			    		"    \"query\": {\n" + 
+	        						"        \"bool\" : {\n " +
+	        						"            \"must\" : {\n" +
+	        			    		"                \"range\" : {\n" + 
+	        			    		"                    \"created\" : {\n" + 
+	        			    		"                        \"gte\": \"" + dateStart + "\",\n" + 
+	        			    		"                        \"lt\": \"" + dateEnd + "\"\n" +
+	        			    		"                    }\n" + 
+	        			    		"                }\n" + 
+	        			    		"            },\n" + 
+	        			    		"            \"must_not\" : [\n" +
+	        			    		"                {\"match\" : { \"event\": \"elements_clicks\"} }, \n" +
+	        			    		"                {\"match\" : { \"event\": \"session_start\"} }, \n" +
+	        			    		"                {\"match\" : { \"event\": \"session_end\"} } \n" +
+	        			    		"            ]\n" + 
+	        			    		"        }\n" + 
+	        			    		"    },\n" + 
+	        			    		"    \"sort\": {\n" +
+	        			    		"      \"created\": { \"order\": \"asc\" }\n" +
+	        			    		"    }\n" +
+	        			    		"}\n");
+	        		 
+	
+	        		URL url = new URL("http://" + SimpaticoProperties.elasticSearchIp + ":9200/shared/IFE/_search?size=" + MAX_NUM_RESULTS_REQUEST);
+	                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	                connection.setRequestMethod("GET");
+	                connection.setDoOutput(true);
+	                connection.setRequestProperty("Content-Type", "application/json");
+	                connection.setRequestProperty("Accept", "application/json");
+	                OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
+	                osw.write(query1);
+	                osw.flush();
+	                osw.close();
+	                Logger.getRootLogger().debug("[LOGS] Sending first GET to url: " + url);
+	                Logger.getRootLogger().debug("[LOGS] Response code: " + connection.getResponseCode());
+	
+	        		BufferedReader in = new BufferedReader(
+	        		        new InputStreamReader(connection.getInputStream()));
+	        		String inputLine;
+	        		StringBuffer response = new StringBuffer();
+	
+	        		while ((inputLine = in.readLine()) != null) {
+	        			response.append(inputLine);
+	        		}
+	        		in.close();
+	
+	        		//print result
+	        		Logger.getRootLogger().debug("[LOGS] Response: " + response.toString());
+	 
+	        		
+					// Convert each response to json and calculate percentage
+					JSONObject jsonUsers = Utils.createJSONObjectIfValid(response.toString());
+					
+					// Arrays to process data from elastic search and get how time users spent
+					ArrayList<UserKPIObject> alUsersSimpatico = new ArrayList<>();   // ArrayList usersSimpatico
+					ArrayList<UserKPIObject> alUsersWithoutSimpatico = new ArrayList<>(); // ArrayList usersWithoutSimpatico
+					
+					// Process users
+					JSONObject jsonUsersResults = jsonUsers.getJSONObject("hits");
+					if (jsonUsersResults.getInt("total") > 0) {
+						JSONObject hitSource;
+						String event;
+						String userId;
+						String timestamp;
+						//String created;
+						Date timeDate;
+						JSONArray arrayHitsUsers = jsonUsersResults.getJSONArray("hits");
+						for (int i = 0; i < arrayHitsUsers.length(); i++) {
+							hitSource = arrayHitsUsers.getJSONObject(i).getJSONObject("_source");
+							userId = hitSource.getString("userID");
+							event = hitSource.getString("event");
+							timestamp = hitSource.getString("timestamp");
+							//created = hitSource.getString("created");
+							//DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime(timestamp);
+							//timeDate = dateTime.toDate();
+							timeDate = new Date(Long.parseLong(timestamp));
+							if (userId.contains("no_user_logged_")) {  // User No Simpatico
+								if (event.equalsIgnoreCase("form_start")) {
+									alUsersWithoutSimpatico.add(0, new UserKPIObject(userId, timeDate));
+								} else {
+									// Search first ocurrence with these ID and add it. If doesnt find any previous item, it seems that event form_start doesnt occurs, so we dont save 
+									for (UserKPIObject oUser : alUsersWithoutSimpatico) {
+										if (oUser.getUser().equalsIgnoreCase(userId)) {
+											oUser.addDate(timeDate, event);
+										}
+									}
+								}
+							} else {
+								if (event.equalsIgnoreCase("form_start")) {
+									alUsersSimpatico.add(0, new UserKPIObject(userId, timeDate));
+								} else {
+									// Search first ocurrence with these ID and add it. If doesnt find any previous item, it seems that event form_start doesnt occurs, so we dont save 
+									for (UserKPIObject oUser : alUsersSimpatico) {
+										if (oUser.getUser().equalsIgnoreCase(userId)) {
+											oUser.addDate(timeDate, event);
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					// Users with SIMPATICO that complete form
+					for (UserKPIObject oUser : alUsersSimpatico) {
+						if (oUser.isFormComplete()) {
+							usersCompleteFormSimpatico++;
+						}
+					}
+	
+					// Users without SIMPATICO that complete form
+					for (UserKPIObject oUser : alUsersWithoutSimpatico) {
+						if (oUser.isFormComplete()) {
+							usersCompleteFormWithoutSimpatico++;
+						}
+					}
+					
+					numSimpaticoUsers = alUsersSimpatico.size();
+					numNoSimpaticoUsers = alUsersWithoutSimpatico.size();
+    			}
+				
+    			// Page to do percentage https://www.skillsyouneed.com/num/percent-change.html
+				double percentage;
+				boolean decrease = false;
+				if (usersCompleteFormWithoutSimpatico == 0) {
+					return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, "Infinity -> " + 
+							". NumSimpaticoUsersComplete: " + usersCompleteFormSimpatico + ". NumSimpaticoUsers: " + numSimpaticoUsers 
+							+ ". NumNoSimpaticoUsersComplete: " +  usersCompleteFormWithoutSimpatico + " NumNoSimpaticoUsers: " + numNoSimpaticoUsers);
+				} else { 
+					double sup = usersCompleteFormSimpatico - usersCompleteFormWithoutSimpatico;
+					double inf = usersCompleteFormWithoutSimpatico;
+					if (sup < 0) { // There is a decrease
+						decrease = true;
+						sup = usersCompleteFormWithoutSimpatico - usersCompleteFormSimpatico;
+						inf = usersCompleteFormWithoutSimpatico;
+					}
+					percentage = Math.round((sup/inf * 100) * 100.0) / 100.0; // Round to 2 decimals
+				}
+				
+				String valueReturn;
+				if (decrease) {
+					valueReturn = "-" + String.valueOf(percentage) + "%";
+				} else {
+					valueReturn = String.valueOf(percentage) + "%";
+				}
+				valueReturn += " -> NumSimpaticoUsersComplete: " + usersCompleteFormSimpatico + ". NumSimpaticoUsers: " + numSimpaticoUsers 
+						+ ". NumNoSimpaticoUsersComplete: " +  usersCompleteFormWithoutSimpatico + " NumNoSimpaticoUsers: " + numNoSimpaticoUsers;
+				
+				return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, valueReturn);
+				
+    			
+    			/*double percentage = timeSpentSimpaticoUsers / timeSpentNoSimpaticoUsers;
+    			percentage = Math.round((percentage * 100) * 100.0) / 100.0;
+    			return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverOkCode, percentage + "%");*/
     		}   		
     		
     		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverBadRequestCode, "JSON in bad format");
