@@ -1025,6 +1025,7 @@ public class SimpaticoResourceLogs {
     @Path("/find/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
+  
     	try {
 			return SimpaticoResourceUtils.findRequest(request, uriInfo, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {

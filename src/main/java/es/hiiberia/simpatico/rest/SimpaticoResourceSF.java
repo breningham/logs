@@ -79,6 +79,68 @@ public class SimpaticoResourceSF {
     	}
     }
     
+    
+    
+    
+    @GET
+    @Path("/find2")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findAnyField_sf(@Context HttpServletRequest request, @Context UriInfo uriInfo) {
+    	
+    	/*try {
+    		// Copy map (it is unmodificable)
+	    	Map<String, List<String>> queryParamsUnmodificable = uriInfo.getQueryParameters();
+	    	Map<String, List<String>> queryParams = new MultivaluedHashMap<>();
+	    	
+	    	if (queryParamsUnmodificable != null)
+	    		queryParams.putAll(queryParamsUnmodificable);
+	    	
+	    	List<String> words = queryParams.get("search");
+			if (words == null) {
+				words = new ArrayList<>();
+				words.add(EVENT_SESSION_FEEDBACK);
+				queryParams.put(SimpaticoResourceUtils.wordsParam, words);
+			} else {
+				words.add(EVENT_SESSION_FEEDBACK);
+			}
+			
+	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}*/
+    	
+    	try {
+			return SimpaticoResourceUtils.findRequest(request, uriInfo, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
+    	} catch (Exception e) {
+			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
+    		return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.serverInternalServerErrorCode, SimpaticoResourceUtils.internalErrorResponse + ": " + SimpaticoResourceUtils.getInternalErrorMessageWithStackTrace(e, numLinesPrintStackInternalError));
+    	}
+    	
+    	
+    	
+    	
+    	
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Insert a json document. The postData must be a valid json (we store the full json)
      * @param request
@@ -181,12 +243,13 @@ public class SimpaticoResourceSF {
     @Path("/selectdialog")
     @Produces(MediaType.TEXT_HTML)
     public String selectDialog(@QueryParam("id") String userId, @QueryParam("ctz") Boolean ctz, @QueryParam("simpl") Boolean simpl, @QueryParam("timeout") Boolean timeout,
-    							@QueryParam("lang") String lang, @QueryParam("wae") Boolean wae) {
+    							@QueryParam("lang") String lang) {
     	// Initialize the forms with the correct language
     	Forms form = new Forms(lang);
     	boolean wordSimp = false;
     	boolean phraseSimp = false;
     	boolean paragraphSimp = false;
+    	boolean wae = false;
     	
     	// Search in ES what the user has done since he started the last session
     	try {

@@ -86,8 +86,8 @@ public class SimpaticoResourceIFE {
 				queryParams.put(SimpaticoResourceUtils.wordsParam, words);
 			} else {
 				words.add(EVENT_SESSION_START);
-			}
-			
+			}	
+        	
 	    	return SimpaticoResourceUtils.findRequest(request, queryParams, ES_INDEX, ES_TYPE, ES_FIELD_SEARCH, FILE_LOG, THIS_RESOURCE);
     	} catch (Exception e) {
 			SimpaticoResourceUtils.logException(e, FILE_LOG, THIS_RESOURCE);
@@ -287,6 +287,7 @@ public class SimpaticoResourceIFE {
 		try {
 			// Check parameters and generate event attribute
 			JSONObject jsonObject = Utils.createJSONObjectIfValid(postData);
+			
 			if (jsonObject != null) {
 				if (jsonObject.has(USER_ID) && jsonObject.has(E_SERVICE_ID) && jsonObject.has(FORM_ID) 
 						&& jsonObject.has(TIMESTAMP)) {

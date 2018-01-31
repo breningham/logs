@@ -237,4 +237,5 @@ public class Forms {
 				    "<div id=\"slider-output-session-feedback\" style=\"text-align: center;\"><output id=\"sliderOutputSessionFeedback\">0</output></div>"+
 				  "</form>"+
 				"</div>";
+	}
 }

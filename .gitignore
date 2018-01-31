@@ -14,3 +14,4 @@ deploymentWARSimpatico.sh
 .settings/*
 .project
 .classpath
+.externalToolBuilders/

@@ -2,6 +2,7 @@ package es.hiiberia.simpatico.utils;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.internal.InternalSearchResponse;
@@ -184,8 +186,7 @@ public class ElasticSearchConnector {
 	}
 	
 	public SearchResponse search(String index, String type, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {
-		
-		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+    	BoolQueryBuilder boolQuery = new BoolQueryBuilder();
 		for (String word : words) {
 			boolQuery.should(QueryBuilders.matchQuery(field, word));
 		}
@@ -205,6 +206,64 @@ public class ElasticSearchConnector {
 		return searchES (index, type, boolQuery, fieldSort, ord, limit);
 	}
 	
+	/**
+	 *Method that searches for all the words that have de common key
+	 * @param common_key
+	 * @param words: array with all values to search
+	 * @param fieldSort: _all
+	 * @throws IOException
+	 */
+	
+	public SearchResponse searchByAnyField(String index, String type, String field, String common_key, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {
+    	BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+    	BoolQueryBuilder boolQuery2 = new BoolQueryBuilder();
+    	for (String word : words) {
+			boolQuery2.should(QueryBuilders.matchQuery(field, word));
+		}
+    	boolQuery.must(QueryBuilders.matchQuery(field, common_key)).must(boolQuery2);
+    	
+		return searchES (index, type, boolQuery, fieldSort, ord, limit);
+	}
+	
+	
+	/**
+	 * Search all documents with match between field: word and also have common_key.
+	 * @param common_key
+	 * @param field: name of field
+	 * @param words: have to match with field
+	 * @throws IOException
+	 */
+	public SearchResponse searchByKey_Value(String index, String type, String common_key, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {		
+		//Normally common_key is e-service
+		String field_common_key= "_all";
+		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+		BoolQueryBuilder boolQuery2 = new BoolQueryBuilder();
+		for (String word : words) {
+			boolQuery2.should(QueryBuilders.matchQuery(field, word));
+		}
+		
+		boolQuery.must(QueryBuilders.matchQuery(field_common_key, common_key)).must(boolQuery2);
+		
+		return searchES (index, type, boolQuery, fieldSort, ord, limit);
+		
+		
+	}
+
+/**
+ * Calculates number of document with name of field= exist.
+ * @param exist: name of field to search.
+ * @throws IOException
+ */
+	public SearchResponse search_Exist(String index, String type, String exist, String fieldSort, SortOrder ord, int limit) throws IOException {		
+		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+		boolQuery.must(QueryBuilders.existsQuery(exist));
+		return searchES (index, type, boolQuery, fieldSort, ord, limit);
+		
+		
+	}
+	
+	
+	
 	private SearchResponse searchES (String index, String type, QueryBuilder qb, String fieldSort, SortOrder ord, int limit) throws IOException {
 		
 		try {
@@ -214,7 +273,7 @@ public class ElasticSearchConnector {
 			
 			// Add query
 			if (qb != null) {
-				searchRequest.setQuery(qb);
+            	searchRequest.setQuery(qb);
 			} else {
 				searchRequest.setQuery(QueryBuilders.matchAllQuery());
 			}
@@ -237,7 +296,8 @@ public class ElasticSearchConnector {
 			}
 			
 			SearchResponse response = searchRequest.get();
-		
+			
+			
 			return response;
 		} catch (IndexNotFoundException e) {
 			Logger.getRootLogger().warn("Elastic search: Searching and there are not index created previusly (index: " + index + ")");		
