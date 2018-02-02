@@ -207,30 +207,35 @@ public class ElasticSearchConnector {
 	}
 	
 	/**
-	 *Method that searches for all the words that have de common key
+	 *Method that searches for all the words that have the common key
 	 * @param common_key
-	 * @param words: array with all values to search
+	 * @param words: Optional. Array with all values to search
 	 * @param fieldSort: _all
 	 * @throws IOException
 	 */
-	
 	public SearchResponse searchByAnyField(String index, String type, String field, String common_key, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {
     	BoolQueryBuilder boolQuery = new BoolQueryBuilder();
     	BoolQueryBuilder boolQuery2 = new BoolQueryBuilder();
     	for (String word : words) {
 			boolQuery2.should(QueryBuilders.matchQuery(field, word));
 		}
-    	boolQuery.must(QueryBuilders.matchQuery(field, common_key)).must(boolQuery2);
     	
-		return searchES (index, type, boolQuery, fieldSort, ord, limit);
+    	//query with common_key
+    	if(common_key!= null){
+    		boolQuery.must(QueryBuilders.matchQuery(field, common_key)).must(boolQuery2);
+    		return searchES (index, type, boolQuery, fieldSort, ord, limit);
+    	
+    	//query without common_key
+    	} else{
+    		return searchES (index, type, boolQuery2, fieldSort, ord, limit);
+    	}	
 	}
 	
-	
 	/**
-	 * Search all documents with match between field: word and also have common_key.
+	 * Search all documents with match between field:word with common_key.
 	 * @param common_key
 	 * @param field: name of field
-	 * @param words: have to match with field
+	 * @param words: Optional.
 	 * @throws IOException
 	 */
 	public SearchResponse searchByKey_Value(String index, String type, String common_key, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {		
@@ -238,31 +243,40 @@ public class ElasticSearchConnector {
 		String field_common_key= "_all";
 		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
 		BoolQueryBuilder boolQuery2 = new BoolQueryBuilder();
-		for (String word : words) {
-			boolQuery2.should(QueryBuilders.matchQuery(field, word));
+		//query with words
+		if (!words.isEmpty()){
+			for (String word : words) {
+				boolQuery2.should(QueryBuilders.matchQuery(field, word));
+			}
+			boolQuery.must(QueryBuilders.matchQuery(field_common_key, common_key)).must(boolQuery2);
+		
+		//query without words
+		} else{
+			boolQuery.must(QueryBuilders.matchQuery(field_common_key, common_key));
 		}
 		
-		boolQuery.must(QueryBuilders.matchQuery(field_common_key, common_key)).must(boolQuery2);
-		
-		return searchES (index, type, boolQuery, fieldSort, ord, limit);
-		
-		
+		return searchES (index, type, boolQuery, fieldSort, ord, limit);	
 	}
 
-/**
- * Calculates number of document with name of field= exist.
- * @param exist: name of field to search.
- * @throws IOException
- */
-	public SearchResponse search_Exist(String index, String type, String exist, String fieldSort, SortOrder ord, int limit) throws IOException {		
+	/**
+	 * Calculates the number of documents with field name equal to exist.
+	 * @param exist: name of field to search.
+	 * @param common_key
+	 * @throws IOException
+	 */
+	public SearchResponse search_Exist(String index, String type, String exist, String common_key, String fieldSort, SortOrder ord, int limit) throws IOException {		
 		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+		BoolQueryBuilder boolQuery2 = new BoolQueryBuilder();
+		
 		boolQuery.must(QueryBuilders.existsQuery(exist));
-		return searchES (index, type, boolQuery, fieldSort, ord, limit);
-		
-		
+		if (common_key!=null){
+			boolQuery2.must(QueryBuilders.matchQuery("_all", common_key)).must(boolQuery);	
+			return searchES (index, type, boolQuery2, fieldSort, ord, limit);
+		} else {
+			return searchES (index, type, boolQuery, fieldSort, ord, limit);
+			
+		}			
 	}
-	
-	
 	
 	private SearchResponse searchES (String index, String type, QueryBuilder qb, String fieldSort, SortOrder ord, int limit) throws IOException {
 		

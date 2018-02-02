@@ -224,7 +224,9 @@ public class SimpaticoResourceUtils {
             	common_key= values.get(0);
             	
             } else if(key.contentEquals("exist")){
-            	exist= values.get(0);
+            	if (!values.isEmpty()) {
+            		exist= values.get(0);
+            	}  	
             		
             // Search	
             } else if(key.contentEquals("search")){
@@ -234,7 +236,6 @@ public class SimpaticoResourceUtils {
             			literalWords.add(splitWord);
             		}
             	}
-            	
             	literalWords.add("searchByField");
             		
             // Limit	
@@ -264,8 +265,8 @@ public class SimpaticoResourceUtils {
         	        
         SearchResponse responseES;
         
-        
         if((common_key!=null)&&(!fieldSearch.equals(""))){
+        //if(!fieldSearch.equals("")){
         	responseES = ElasticSearchConnector.getInstance().searchByKey_Value(ES_INDEX, ES_TYPE, common_key, fieldSearch, literalWords, fieldSortName, sortOrder, limit);
         
         // No params, so empty request -> return full documents stored
@@ -275,7 +276,7 @@ public class SimpaticoResourceUtils {
        
         //Calculate how many documents exist with this field.
 		} else if (exist!=null) {
-        	responseES = ElasticSearchConnector.getInstance().search_Exist(ES_INDEX, ES_TYPE, exist, fieldSortName, sortOrder, limit);
+        	responseES = ElasticSearchConnector.getInstance().search_Exist(ES_INDEX, ES_TYPE, exist, common_key, fieldSortName, sortOrder, limit);
 		
 		} else if (literalWords.isEmpty()) {
         	//Logger.getRootLogger().info("[RESOURCE_UTILS] NOP");
@@ -292,14 +293,11 @@ public class SimpaticoResourceUtils {
         }
         
         //Filter the result when it's one of two.
-        if(fieldSearch.equals("slider_session_feedback_ctz")||fieldSearch.equals("slider_session_feedback_paragraph")){
-        	
+        if((fieldSearch.equals("slider_session_feedback_ctz")||fieldSearch.equals("slider_session_feedback_paragraph"))&&(!literalWords.isEmpty())){
         	Response query= SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.searchResponse2JSONResponse(responseES));
         	JSONArray JsonArray_aux= new JSONArray();
         	JSONObject jsonObject_final= new JSONObject();
         	JSONObject jsonObject_data;
-        	
-        	Logger.getRootLogger().info(query.getEntity().toString());
         	JSONObject jsonObject = Utils.createJSONObjectIfValid(query.getEntity().toString());
         	        
         	//Get an array with all JSONObject
@@ -312,12 +310,11 @@ public class SimpaticoResourceUtils {
         		
         		int valor= (int) jsonObject_data.get(fieldSearch);
         		if(literalWords.contains(Integer.toString(valor))){
-        			JsonArray_aux.put((JSONObject) JSON_arr.get(i));
-        		}	
+        			JsonArray_aux.put((JSONObject) JSON_arr.get(i)); 
+        		}			
         	}
         	
-        	//Create a definitive JSONObject with values updates Create a document with updated values
-
+        	//Create a definitive JSONObject with values updates
         	Iterator<?> it= jsonObject.keys();
         	while(it.hasNext()){
         		String key= (String)it.next();
@@ -332,12 +329,10 @@ public class SimpaticoResourceUtils {
         			
         		}
         	}
-    
         	return SimpaticoResourceUtils.createMessageResponse(jsonObject_final);		
         
         } else {
         	return SimpaticoResourceUtils.createMessageResponse(SimpaticoResourceUtils.searchResponse2JSONResponse(responseES));
-	
         }
 	}
 	
