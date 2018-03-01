@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/SIMPATICOProject/logs.svg?branch=master)](https://travis-ci.org/SIMPATICOProject/logs)
+
 # Logs
 Logs is a module for store/search/update multiple data from another modules.
 
