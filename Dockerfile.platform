@@ -1,0 +1,23 @@
+FROM maven:3.5.2-jdk-8-alpine
+
+WORKDIR /app
+
+COPY . /app
+
+COPY docker-configs/simpatico.platform.properties src/main/resources/simpatico.properties
+
+RUN apk add --update openssl
+
+# install tomcat
+WORKDIR /servers
+RUN wget -O apache-tomcat.tgz https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.28/bin/apache-tomcat-8.5.28.tar.gz
+RUN tar xzvf apache-tomcat.tgz
+RUN rm apache-tomcat.tgz
+
+WORKDIR /app
+RUN mvn clean package -Dmaven.test.skip=true && cp target/simpatico.war /servers/apache-tomcat-8.5.28/webapps
+
+WORKDIR /servers
+CMD apache-tomcat-8.5.28/bin/catalina.sh run
+
+EXPOSE 8080

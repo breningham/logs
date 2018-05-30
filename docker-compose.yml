@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  webapp:
+    build:
+      context: .
+    ports:
+      - 8899:8080
+    volumes:
+      - .:/usr/src/mymaven
