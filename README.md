@@ -29,6 +29,11 @@ Logs is a module for store/search/update multiple data from another modules.
 ## Configuration Swagger files
 
   1. Open each file in `src/main/webapp/dist/yaml_files` and change `host` and `basePath, schemes` if you want
+ 
+## Configuration Session Feedback Questions
+  In the root of this project you can find a `SF_Configuration.pdf` file explaining how to create the JSON file use to create the questions for the Session Feedback modal at the end of each service. We are in the process of updating the Swagger file with the new endpoints and its structure, but in the meantime there is the `SF_Configuration.pdf` file.
+  
+  The goal is to create one JSON for each service in each language.
   
 ## Configuration Java project
 
