@@ -33,6 +33,9 @@ public class SimpaticoProperties {
 	public static String elasticSearchPiwikIndex;
 	public static String elasticSearchPiwikType;
 	
+	// Session feedback configuration JSONs
+	public static String elasticSearchSFQuestionsIndex;
+	
 	// Authentication AAC
 	public static Boolean aacUse;
 	public static String aacUrlServer;
@@ -84,6 +87,9 @@ public class SimpaticoProperties {
 			piwikAuthToken = RESOURCE_BUNDLE.getString("piwik.auth_token");
 			elasticSearchPiwikIndex = RESOURCE_BUNDLE.getString("elasticsearch.piwik.index");
 			elasticSearchPiwikType = RESOURCE_BUNDLE.getString("elasticsearch.piwik.type");
+			
+			// Session feedback configuration JSONs
+			elasticSearchSFQuestionsIndex = RESOURCE_BUNDLE.getString("elasticsearch.sf.index");
 			
 			// Real Ip header name
 			realIpHeaderName = RESOURCE_BUNDLE.getString("http.header.realip");

@@ -2,7 +2,6 @@ package es.hiiberia.simpatico.utils;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +21,6 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.internal.InternalSearchResponse;
@@ -233,12 +231,12 @@ public class ElasticSearchConnector {
 	
 	/**
 	 * Search all documents with match between field:word with common_key.
-	 * @param common_key
-	 * @param field: name of field
-	 * @param words: Optional.
+	 * @param common_value: value to search for
+	 * @param field: name of field for the value
+	 * @param words: Optional. Include the value if only searching for one pair field-value
 	 * @throws IOException
 	 */
-	public SearchResponse searchByKey_Value(String index, String type, String common_key, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {		
+	public SearchResponse searchByKey_Value(String index, String type, String common_value, String field, List<String> words, String fieldSort, SortOrder ord, int limit) throws IOException {		
 		//Normally common_key is e-service
 		String field_common_key= "_all";
 		BoolQueryBuilder boolQuery = new BoolQueryBuilder();
@@ -248,11 +246,11 @@ public class ElasticSearchConnector {
 			for (String word : words) {
 				boolQuery2.should(QueryBuilders.matchQuery(field, word));
 			}
-			boolQuery.must(QueryBuilders.matchQuery(field_common_key, common_key)).must(boolQuery2);
+			boolQuery.must(QueryBuilders.matchQuery(field_common_key, common_value)).must(boolQuery2);
 		
 		//query without words
-		} else{
-			boolQuery.must(QueryBuilders.matchQuery(field_common_key, common_key));
+		} else {
+			boolQuery.must(QueryBuilders.matchQuery(field_common_key, common_value));
 		}
 		
 		return searchES (index, type, boolQuery, fieldSort, ord, limit);	
