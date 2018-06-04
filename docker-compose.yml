@@ -33,7 +33,7 @@ services:
           soft: -1
           hard: -1
       volumes: 
-        - logses1:/usr/share/elasticsearch/data
+        - es1:/usr/share/elasticsearch/data
       networks:
         - esnet
   elasticsearch_shard_2:     
@@ -54,7 +54,7 @@ services:
           soft: -1
           hard: -1
       volumes: 
-        - logses2:/usr/share/elasticsearch/data
+        - es2:/usr/share/elasticsearch/data
       networks:
         - esnet
   matomo_app:
