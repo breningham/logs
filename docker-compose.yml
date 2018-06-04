@@ -2,9 +2,85 @@ version: '3'
 
 services:
   webapp:
+    container_name: log_app
     build:
       context: .
     ports:
       - 8899:8080
     volumes:
       - .:/usr/src/mymaven
+    depends_on:
+      - elasticsearch_shard_1
+      - elasticsearch_shard_2
+      - matomo_app
+    links: 
+      - matomo_app:piwik
+      - elasticsearch_shard_1:es
+  elasticsearch_shard_1: 
+      image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+      restart: always
+      container_name: logs_es_1
+      environment: 
+        - cluster.name=logs-cluster
+        - bootstrap.memory_lock=true
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      deploy:
+        resources:
+          limits:
+            memory: 2G
+      ulimits:
+        memlock: 
+          soft: -1
+          hard: -1
+      volumes: 
+        - logses1:/usr/share/elasticsearch/data
+      networks:
+        - esnet
+  elasticsearch_shard_2:     
+      image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+      restart: always
+      container_name: logs_es_2
+      environment: 
+        - cluster.name=logs-cluster
+        - bootstrap.memory_lock=true
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - "discovery.zen.ping.unicast.hosts=logs_es_1"
+      deploy:
+        resources:
+          limits:
+            memory: 2G
+      ulimits:
+        memlock: 
+          soft: -1
+          hard: -1
+      volumes: 
+        - logses2:/usr/share/elasticsearch/data
+      networks:
+        - esnet
+  matomo_app:
+    image: matomo
+    depends_on: 
+      - matomo_db
+    links:
+      - matomo_db:db
+    ports:
+      - 8009:80
+  matomo_db: 
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+    volumes:
+      - matomo:/var/lib/mysql
+
+volumes:
+  es1:
+    driver: local
+  es2:
+    driver: local
+  matomo:
+    driver: local
+
+networks:
+  esnet:
+  logs:
