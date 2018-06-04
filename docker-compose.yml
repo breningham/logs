@@ -62,7 +62,7 @@ services:
     links:
       - matomo_db:db
     ports:
-      - 8009:80
+      - 8900:80
     networks:
       - logs
   matomo_db: 
@@ -72,6 +72,8 @@ services:
       MYSQL_ROOT_PASSWORD: "change_me"
     volumes:
       - matomo:/var/lib/mysql
+    networks:
+      - logs
 
 volumes:
   es1:
