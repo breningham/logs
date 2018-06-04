@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 
 services:
   webapp:
@@ -26,14 +26,11 @@ services:
         - cluster.name=logs-cluster
         - bootstrap.memory_lock=true
         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      deploy:
-        resources:
-          limits:
-            memory: 2G
       ulimits:
         memlock: 
           soft: -1
           hard: -1
+      mem_limit: 1g
       volumes: 
         - es1:/usr/share/elasticsearch/data
       networks:
@@ -48,14 +45,11 @@ services:
         - bootstrap.memory_lock=true
         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
         - "discovery.zen.ping.unicast.hosts=logs_es_1"
-      deploy:
-        resources:
-          limits:
-            memory: 2G
       ulimits:
         memlock: 
           soft: -1
           hard: -1
+      mem_limit: 1g
       volumes: 
         - es2:/usr/share/elasticsearch/data
       networks:
@@ -75,7 +69,7 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: "change_me"
     volumes:
       - matomo:/var/lib/mysql
 
