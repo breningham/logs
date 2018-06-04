@@ -16,6 +16,8 @@ services:
     links: 
       - matomo_app:piwik
       - elasticsearch_shard_1:es
+    networks:
+      - logs
   elasticsearch_shard_1: 
       image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
       restart: always
@@ -36,6 +38,7 @@ services:
         - es1:/usr/share/elasticsearch/data
       networks:
         - esnet
+        - logs
   elasticsearch_shard_2:     
       image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
       restart: always
@@ -57,6 +60,7 @@ services:
         - es2:/usr/share/elasticsearch/data
       networks:
         - esnet
+        - logs
   matomo_app:
     image: matomo
     depends_on: 
@@ -65,6 +69,8 @@ services:
       - matomo_db:db
     ports:
       - 8009:80
+    networks:
+      - logs
   matomo_db: 
     image: mysql
     restart: always
